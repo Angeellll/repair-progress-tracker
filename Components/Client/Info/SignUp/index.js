@@ -141,7 +141,7 @@ export default function index() {
               justifyContent: "center",
             }}
           >
-            <Button>SIGN UP</Button>
+            <Button>CREATE ACCOUNT</Button>
           </div>
 
           <div

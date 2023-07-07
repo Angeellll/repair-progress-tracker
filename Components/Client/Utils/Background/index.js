@@ -118,7 +118,7 @@ export default function index({ children }) {
             }}>
               <A href="/">Home</A>
               <A  href="/SignIn">Sign In</A>
-              <A href="/">FAQ</A>
+              <A href="/FAQ">FAQ</A>
             </div>
           </div>
         </LogoContainer>
