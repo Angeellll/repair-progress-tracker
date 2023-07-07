@@ -1,8 +1,7 @@
 import React from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
-import { useRouter } from 'next/router';
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/router";
 
 const Wrapper = styled.div`
   display: flex;
@@ -59,25 +58,30 @@ const Button = styled.button`
 `;
 
 export default function index() {
-
-
   const router = useRouter();
 
   const handleButtonClick = () => {
-    router.push("/Components/Client/Utils/Background")
+    router.push("/Reference");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
   };
 
   return (
     <Background>
       <Wrapper>
-        <h2 style={{ marginTop: "-25px", fontSize: "40px", lineHeight: "50px"}}>
-          Welcome to <br/>Connection Power Tools
+        <h2
+          style={{ marginTop: "-25px", fontSize: "40px", lineHeight: "50px" }}
+        >
+          Welcome to <br />
+          Connection Power Tools
         </h2>
         <h4 style={{ marginTop: "-25px", fontSize: "25px" }}>
           Your trusted destination for connection power tool repairs.
         </h4>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <FormContainer>
             <Input type="text" placeholder="Enter reference number" />
             <div
