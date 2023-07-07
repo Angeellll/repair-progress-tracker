@@ -72,7 +72,7 @@ export default function index() {
     <Background>
       <Wrapper>
         <h2
-          style={{ marginTop: "-25px", fontSize: "40px", lineHeight: "50px" }}
+          style={{ marginTop: "-110px", fontSize: "40px", lineHeight: "50px" }}
         >
           Welcome to <br />
           Connection Power Tools
@@ -88,6 +88,7 @@ export default function index() {
               style={{
                 display: "flex",
                 justifyContent: "start",
+                
               }}
             >
               <Button onClick={handleButtonClick}>CHECK PROGRESS</Button>

@@ -50,7 +50,7 @@ function More() {
           <h5
           style={{fontStyle: "italic", fontWeight: "400", marginLeft: "20px"}
         }
-          >You must <a href="/Login" style={{fontStyle: "italic", fontWeight: "500"}}>sign in</a> first. </h5>
+          >You must <a href="/SignIn" style={{fontStyle: "italic", fontWeight: "500"}}>sign in</a> first. </h5>
         </div>
       )}
     </Wrapper>

@@ -78,7 +78,9 @@ export default function index({ children }) {
     <Wrapper>
       <Container>
         <LogoContainer>
+          <a href="/">
           <img width="100" height="100" src="logo.png" />
+          </a>
           <LogoTitle>CONNECTION POWER TOOLS</LogoTitle>
         </LogoContainer>
         <Content>{children}</Content>
