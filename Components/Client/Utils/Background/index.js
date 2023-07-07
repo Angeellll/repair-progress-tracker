@@ -34,6 +34,7 @@ const LogoContainer = styled.div`
   height: 100px;
   display: flex;
   align-items: center;
+  width: 100%;
 `;
 
 const LogoTitle = styled.h1`
@@ -73,15 +74,53 @@ const FooterWrapper = styled.div`
   font-size: 12px;
 `;
 
+const A = styled.a`
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
 export default function index({ children }) {
   return (
     <Wrapper>
       <Container>
         <LogoContainer>
-          <a href="/">
-          <img width="100" height="100" src="logo.png" />
-          </a>
-          <LogoTitle>CONNECTION POWER TOOLS</LogoTitle>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              
+            }}
+          >
+            <a href="/">
+              <img width="100" height="100" src="logo.png" />
+            </a>
+            <LogoTitle>CONNECTION POWER TOOLS</LogoTitle>
+          </div>
+          <div
+            style={{
+              width: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              
+            }}
+          >
+            <div style={{
+              width: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              
+            }}>
+              <A href="/">Home</A>
+              <A  href="/SignIn">Sign In</A>
+              <A href="/">FAQ</A>
+            </div>
+          </div>
         </LogoContainer>
         <Content>{children}</Content>
         <Footer>
