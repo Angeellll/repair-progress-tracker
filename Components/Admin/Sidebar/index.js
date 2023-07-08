@@ -5,6 +5,7 @@ import Chat from "../FAQ";
 import Requests from "../Requests";
 import Trash from "../Trash";
 import Dashboard from "../Dashboard";
+import AddRequest from "../AddRequest";
 
 const Wrapper = styled.div`
   display: grid;
@@ -12,6 +13,7 @@ const Wrapper = styled.div`
   grid-gap: 0;
   background-color: #caf0f8;
   color: #484848;
+  overflow: hidden;
 `;
 
 const SideMenu = styled.div`
@@ -112,12 +114,23 @@ const Container = styled.div`
 
 function Index() {
   const [activeButton, setActiveButton] = useState("dashboard");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName);
   };
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  
+
   return (
+    <>
     <Wrapper>
       <SideMenu>
         <Logo>
@@ -144,7 +157,7 @@ function Index() {
             Admin
           </h2>
         </Admin>
-        <AddClient>
+        <AddClient onClick={handleOpenModal}>
           <Icon
             icon="ic:round-plus"
             width="25"
@@ -211,8 +224,13 @@ function Index() {
           {activeButton === "chats" && <Chat />}
           {activeButton === "trash" && <Trash />}
         </Container>
+        
       </Content>
+      <AddRequest isOpen={isModalOpen} onClose={handleCloseModal} />
     </Wrapper>
+    
+    </>
+
   );
 }
 

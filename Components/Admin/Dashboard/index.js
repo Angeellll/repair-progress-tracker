@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { Icon } from "@iconify/react";
+import BarGraph from "./BarGraph";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -60,6 +61,7 @@ const CardContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  overflow: hidden; /* Added to hide overflowing content */
 `;
 
 const P = styled.p`
@@ -70,7 +72,7 @@ const P = styled.p`
 function Dashboard() {
   return (
     <Wrapper>
-      <Header style={{}}>
+      <Header>
         <Icon
           icon="material-symbols:dashboard"
           width="40"
@@ -96,7 +98,7 @@ function Dashboard() {
         >
           <CardWrapper style={{ gridColumn: "1" }}>
             <CardContainer style={{ backgroundColor: "#98FF98" }}>
-              <P> TRANSACTION </P>
+              <P>TRANSACTION</P>
               <h2 style={{ margin: "0px" }}>10</h2>
               <P>Completed</P>
             </CardContainer>
@@ -117,7 +119,18 @@ function Dashboard() {
             </CardContainer>
           </CardWrapper>
         </div>
-        <div style={{ gridRow: "2" }}>eyyy</div>
+        <div style={{ gridRow: "2", display: "grid", gridTemplateColumns: "2" }}>
+          <CardWrapper style={{gridColumn: "1"}}>
+          <CardContainer >
+            <BarGraph style={{ width: "100%", height: "100%" }} />
+          </CardContainer>
+          </CardWrapper>
+          <CardWrapper style={{gridColumn: "2"}}>
+          <CardContainer >
+            <BarGraph style={{ width: "100%", height: "100%" }} />
+          </CardContainer>
+          </CardWrapper>
+        </div>
       </div>
     </Wrapper>
   );
