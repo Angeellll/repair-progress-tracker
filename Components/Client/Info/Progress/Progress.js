@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
 
@@ -79,9 +79,16 @@ const Line = styled.div`
 function Progress() {
   const percent = 89;
 
+  const [isClicked, setIsClicked] = useState(false);
+
+  const handleClick = () => {
+    setIsClicked(true);
+  };
+
   return (
+    
     <MainWrapper>
-      <Title>Progress</Title>
+      <Title onClick={handleClick}>Progress</Title>
       <Wrapper>
         {/* 10% */}
         <YWrapper>
@@ -204,6 +211,9 @@ function Progress() {
           )}
         </YWrapper>
       </Wrapper>
+      {isClicked && <><Progress/></>
+      
+    }
     </MainWrapper>
   );
 }

@@ -1,8 +1,11 @@
 import React from 'react'
+import AdminPage from '@/Components/Admin/Sidebar'
 
 function Admin() {
   return (
-    <div>Admin</div>
+    <>
+    <AdminPage/>
+    </>
   )
 }
 
