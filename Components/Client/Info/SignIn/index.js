@@ -1,6 +1,8 @@
 import React from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
+import { useRouter } from "next/router";
+
 
 const Wrapper = styled.div`
   display: flex;
@@ -53,10 +55,20 @@ const Button = styled.button`
 `;
 
 export default function index() {
+  const router = useRouter();
+
+  const handleButtonClick = () => {
+    router.push("/Progress");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <Background>
       <Wrapper>
-        <FormContainer>
+        <FormContainer onSubmit={handleSubmit}>
           <div
             style={{
               marginBottom: "30px",
@@ -125,7 +137,7 @@ export default function index() {
               flexDirection: "column",
             }}
           >
-            <Button>SIGN IN</Button>
+            <Button onClick={handleButtonClick}>SIGN IN</Button>
           </div>
 
           <div
