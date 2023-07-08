@@ -71,7 +71,7 @@ const Circle = styled.div`
 `;
 
 const Line = styled.div`
-  width: 70px;
+  width: 100px;
   height: 5px;
   background-color: #03045e;
 `;
