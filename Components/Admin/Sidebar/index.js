@@ -8,6 +8,10 @@ import Dashboard from "../Dashboard";
 import AddRequest from "../AddRequest";
 
 const Wrapper = styled.div`
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
   display: grid;
   grid-template-columns: 20% 80%;
   grid-gap: 0;

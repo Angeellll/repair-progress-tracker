@@ -113,11 +113,9 @@ export default function index({ children }) {
               width: "50%",
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
+              justifyContent: "end",
               
             }}>
-              <A href="/">Home</A>
-              <A  href="/SignIn">Sign In</A>
               <A href="/FAQ">FAQ</A>
             </div>
           </div>
@@ -171,7 +169,7 @@ export default function index({ children }) {
             >
               <Icon icon="mdi:address-marker" width="20" />
             </div>
-            <div>Silang, Cavite chuhchcuhcuchuchuchuchucu</div>
+            <div>Purok 1, Lumil, Silang, Cavite</div>
           </FooterWrapper>
         </Footer>
       </Container>

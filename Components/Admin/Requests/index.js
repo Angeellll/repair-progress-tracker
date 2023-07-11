@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useState} from "react";
 import styled, { css } from "styled-components";
 import { Icon } from "@iconify/react";
+import Action from "../Requests/Action"
 
 const Wrapper = styled.div`
   width: 100%;
@@ -52,7 +53,7 @@ const TableWrapper = styled.table`
   grid-gap: 0;
   border-radius: 10px;
   table-layout: auto;
-  border: 1px solid gray;
+  border: 1px solid #eaecf0;
 `;
 
 const THead = styled.thead`
@@ -64,7 +65,7 @@ const THead = styled.thead`
   background-color: #eaecf0;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
-  border-bottom: 1px gray solid;
+  border-bottom: 1px #eaecf0 solid;
 `;
 
 const TBody = styled.tbody`
@@ -153,7 +154,24 @@ const Tr = styled.tr`
 `;
 
 function Requests() {
+
+  
+  const [activeButton, setActiveButton] = useState("dashboard");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleButtonClick = (buttonName) => {
+    setActiveButton(buttonName);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
+    <>
     <Wrapper>
       <Header>
         <Icon icon="mdi:tools" width="40" style={{ marginRight: "15px" }} />
@@ -173,7 +191,7 @@ function Requests() {
         <TBody>
         {[...Array(100)].map((_, index) => (
                 <>
-          <Tr key={index}>
+          <Tr key={index} onClick={handleOpenModal}>
             
             <Td style={{ width: "10%" }}>1001</Td>
             <Td style={{ width: "15%" }}>Jhaslyn E. Gerochi</Td>
@@ -187,7 +205,10 @@ function Requests() {
           ))}
         </TBody>
       </TableWrapper>
+      
     </Wrapper>
+    <Action isOpen={isModalOpen} onClose={handleCloseModal} />
+    </>
   );
 }
 
