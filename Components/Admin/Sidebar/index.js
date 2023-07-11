@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
 import Chat from "../FAQ";
-import Requests from "../Requests";
+import Requests from "../Requests/index";
 import Trash from "../Trash";
 import Dashboard from "../Dashboard";
 import AddRequest from "../AddRequest";

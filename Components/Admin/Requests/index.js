@@ -1,5 +1,5 @@
 import React from "react";
-import styled, {css}  from "styled-components";
+import styled, { css } from "styled-components";
 import { Icon } from "@iconify/react";
 
 const Wrapper = styled.div`
@@ -44,14 +44,32 @@ const Search = styled.input.attrs({
   }
 `;
 
-const TableWrapper = styled.div`
-  overflow: auto;
-  position: relative;
-  height: 100%;
-  width: 100%;
+const TableWrapper = styled.table`
+  grid-row: 2;
+  margin: 15px;
+  display: grid;
+  grid-template-rows: 10% 90%;
+  grid-gap: 0;
+  border-radius: 10px;
+  table-layout: auto;
+  border: 1px solid gray;
+`;
+
+const THead = styled.thead`
+  grid-row: 1;
+  position: sticky;
   display: flex;
-  justify-content: center;
-  align-items: start;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #eaecf0;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border-bottom: 1px gray solid;
+`;
+
+const TBody = styled.tbody`
+  grid-row: 2;
+  overflow: auto;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -67,32 +85,15 @@ const TableWrapper = styled.div`
   }
 `;
 
-const Table = styled.table`
-  border-collapse: collapse;
-  border-spacing: 0;
-  table-layout: fixed;
-  width: 100%;
-  height: 80%;
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid #EAECF0;
-  border-radius: 10px;
-`;
-
-const Thead = styled.thead`
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: #F9FAFB;
-  border: #EAECF0 1px solid;
-`;
-
 const Th = styled.th`
   font-family: Roboto;
   font-size: 12px;
   font-weight: 300;
   height: 30px;
-  color: #8A92A6;
+  color: #8a92a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Td = styled.td`
@@ -103,7 +104,9 @@ const Td = styled.td`
   height: fit-content;
   text-align: center;
   height: 40px;
-  border-bottom: #EAECF0 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const TdS = styled.td`
@@ -114,31 +117,40 @@ const TdS = styled.td`
   height: fit-content;
   text-align: center;
   height: 40px;
-  border-bottom: #EAECF0 1px solid;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   ${(props) =>
     props.status === "On-going" &&
     css`
-      color: #0096C7;
+      color: #0096c7;
     `}
 
   ${(props) =>
     props.status === "Finished" &&
     css`
-      color: #05FF00;
+      color: #05ff00;
     `}
 
     ${(props) =>
-      props.status === "Failed" &&
-      css`
-        color: #FF0000;
-      `}
+    props.status === "Failed" &&
+    css`
+      color: #ff0000;
+    `}
 `;
 
-const Tr = styled.div`
+const Tr = styled.tr`
+  display: flex;
+  justify-content: space-around;
+  border-bottom: #eaecf0 1px solid;
+  cursor: pointer;
 
-
-`
+  &:hover {
+    background-color: #eaecf0;
+  }
+`;
 
 function Requests() {
   return (
@@ -150,110 +162,31 @@ function Requests() {
         </h2>
         <Search placeholder="Search" />
       </Header>
-      <div style={{ paddingBottom: "10px" }}>
-        <TableWrapper>
-          <Table>
-            <Thead>
-              <tr>
-                <Th style={{ width: "3%" }}>
-                  <input type="checkbox" />
-                </Th>
-                <Th style={{ width: "8%" }}>Reference Number</Th>
-                <Th style={{ width: "15%" }}>Client's Name</Th>
-                <Th style={{ width: "10%" }}>Tool Under Repair</Th>
-                <Th style={{ width: "10%" }}>Phone Number</Th>
-                <Th style={{ width: "10%" }}>Date Accepted</Th>
-                <Th style={{ width: "10%" }}>Estimated Completion</Th>
-                <Th style={{ width: "7%" }}>Status</Th>
-                <Th style={{ width: "5%" }}>Progress</Th>
-                <Th style={{ width: "10%" }}>Actions</Th>
-              </tr>
-            </Thead>
-            <tbody>
-              {[...Array(100)].map((_, index) => (
+      <TableWrapper>
+        <THead>
+          <Th style={{ width: "10%" }}>Reference Number</Th>
+          <Th style={{ width: "15%" }}>Client's Name</Th>
+          <Th style={{ width: "15%" }}>Assigned Repairman</Th>
+          <Th style={{ width: "10%" }}>Tool Under Repair</Th>
+          <Th style={{ width: "7%", paddingRight: "10px" }}>Status</Th>
+        </THead>
+        <TBody>
+        {[...Array(100)].map((_, index) => (
                 <>
-                <tr key={index}>
-                  <Td>
-                    <input type="checkbox" />
-                  </Td>
-                  <Td>1001</Td>
-                  <Td>Jeth Nico T. Morado</Td>
-                  <Td>Drill</Td>
-                  <Td>09123456789</Td>
-                  <Td>06-23-23</Td>
-                  <Td>07-01-23</Td>
-                  <TdS status="On-going">On-going</TdS>
-                  <Td>10%</Td>
-                  <Td style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                    <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between", width: "50%"}}>
-                    <Icon icon="fluent:delete-20-regular" width="20" color="red"/>
-                    <Icon icon="fluent:edit-16-regular" width="20" color="blue"/>
-                    </div>
-                  </Td>
-                </tr>
-                <tr>
-                  <Td>
-                    <input type="checkbox" />
-                  </Td>
-                  <Td>1001</Td>
-                  <Td>Jhaslyn E. Gerochi</Td>
-                  <Td>Pliers</Td>
-                  <Td>09123456789</Td>
-                  <Td>06-23-23</Td>
-                  <Td>07-01-23</Td>
-                  <TdS status="Failed">Failed</TdS>
-                  <Td>10%</Td>
-                  <Td style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                    <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between", width: "50%"}}>
-                    <Icon icon="fluent:delete-20-regular" width="20" color="red"/>
-                    <Icon icon="fluent:edit-16-regular" width="20" color="blue"/>
-                    </div>
-                  </Td>
-                </tr>
-                <tr>
-                  <Td>
-                    <input type="checkbox" />
-                  </Td>
-                  <Td>1001</Td>
-                  <Td>Jasper P. Carpenteros</Td>
-                  <Td>Cutter</Td>
-                  <Td>09123456789</Td>
-                  <Td>06-23-23</Td>
-                  <Td>07-01-23</Td>
-                  <TdS status="Finished">Finished</TdS>
-                  <Td>10%</Td>
-                  <Td style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                    <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between", width: "50%"}}>
-                    <Icon icon="fluent:delete-20-regular" width="20" color="red"/>
-                    <Icon icon="fluent:edit-16-regular" width="20" color="blue"/>
-                    </div>
-                  </Td>
-                </tr>
-                <tr>
-                  <Td>
-                    <input type="checkbox" />
-                  </Td>
-                  <Td>1001</Td>
-                  <Td>Jasper P. Carpenteros</Td>
-                  <Td>Chainsaw</Td>
-                  <Td>09123456789</Td>
-                  <Td>06-23-23</Td>
-                  <Td>07-01-23</Td>
-                  <TdS status="Finished">Finished</TdS>
-                  <Td>10%</Td>
-                  <Td style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                    <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between", width: "50%"}}>
-                    <Icon icon="fluent:delete-20-regular" width="20" color="red"/>
-                    <Icon icon="fluent:edit-16-regular" width="20" color="blue"/>
-                    </div>
-                  </Td>
-                </tr>
-                </>
-              ))}
-            </tbody>
-          </Table>
-        </TableWrapper>
-      </div>
+          <Tr key={index}>
+            
+            <Td style={{ width: "10%" }}>1001</Td>
+            <Td style={{ width: "15%" }}>Jhaslyn E. Gerochi</Td>
+            <Td style={{ width: "15%" }}>Jeth Nico T. Morado</Td>
+            <Td style={{ width: "10%" }}>Drill</Td>
+            <TdS style={{ width: "7%" }} status="On-going">
+              On-going
+            </TdS>
+          </Tr>
+          </>
+          ))}
+        </TBody>
+      </TableWrapper>
     </Wrapper>
   );
 }

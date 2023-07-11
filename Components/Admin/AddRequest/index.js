@@ -12,6 +12,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
+  color: #808080;
 `;
 
 const Container = styled.div`
@@ -19,7 +21,7 @@ const Container = styled.div`
   background-color: white;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   width: 25%;
-  height: 60%;
+  height: 70%;
   display: grid;
   grid-template-rows: 5% 95%;
 `;
@@ -55,7 +57,7 @@ const InputWrapper = styled.div`
   width: 80%;
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
+  margin-top: 10px;
 `;
 
 const Input = styled.input`
@@ -129,7 +131,18 @@ const AddRequest = ({ isOpen, onClose }) => {
             <Input type="number" placeholder="Phone Number" />
           </InputWrapper>
           <InputWrapper>
+          <h5 style={{margin:" 0px", fontWeight: "500"}}>Data accepted</h5>
             <Input type="date" placeholder="Date" />
+          </InputWrapper>
+          <InputWrapper>
+          <h5 style={{margin:" 0px", fontWeight: "500"}}>Estimated completion</h5>
+            <Input type="date" placeholder="Date" />
+          </InputWrapper>
+          <InputWrapper>
+            <Input type="text" placeholder="Tool under repair" />
+          </InputWrapper>
+          <InputWrapper>
+            <Input type="text" placeholder="Assigned repairman" />
           </InputWrapper>
           <InputWrapper
             style={{ flexDirection: "row", justifyContent: "space-between" }}
