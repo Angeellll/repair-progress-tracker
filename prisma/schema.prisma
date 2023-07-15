@@ -11,41 +11,34 @@ datasource db {
 }
 
 model Customer {
-  UserID     Int     @id @default(autoincrement())
-  Username   String
+  UserID     Int    @id @default(autoincrement())
   ClientName String
   Password   String
   Email      String
   ContactNo  String
-  Order      Order[]
 
-  @@unique([Username, ClientName, Email, ContactNo])
-  @@index([Username])
+  @@unique([ClientName, Email, ContactNo])
+  @@index([Email])
 }
 
 model Order {
-  RefNumber            Int       @id @default(autoincrement())
-  UserID               Customer  @relation(fields: [customerUserID], references: [UserID])
-  customerUserID       Int
-  ToolUnderRepair      String
-  dateAccepted         DateTime  @default(now())
-  etaCompletion        DateTime
-  OrderStatus          String
-  OrderProgress        String
-  RepairmanID          Repairman @relation(fields: [repairmanRepairmanID], references: [RepairmanID])
-  repairmanRepairmanID Int
-  Payment              Payment[]
+  RefNumber       Int      @id @default(autoincrement())
+  customerName    String
+  ToolUnderRepair String
+  dateAccepted    DateTime @default(now())
+  etaCompletion   DateTime
+  OrderStatus     String
+  OrderProgress   String
+  RepairmanName   String
 }
 
 model Repairman {
-  RepairmanID   Int     @id @default(autoincrement())
-  Orders        Order[]
-  RepairmanName String  @unique
+  RepairmanID   Int    @id @default(autoincrement())
+  RepairmanName String @unique
 }
 
 model Payment {
   PaymentID      Int    @id @default(autoincrement())
-  RefNumber      Order  @relation(fields: [orderRefNumber], references: [RefNumber])
   PaymentStatus  String
   orderRefNumber Int
 }
