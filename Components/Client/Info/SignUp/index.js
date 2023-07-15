@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
@@ -88,7 +88,7 @@ export default function SignUp() {
     email: "",
     phoneNumber: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const handleSubmit = async (e) => {
@@ -143,7 +143,7 @@ export default function SignUp() {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -151,8 +151,20 @@ export default function SignUp() {
     <Background>
       <Wrapper>
         <FormContainer>
-          <div>
-            <h1>Sign Up</h1>
+          <div
+            style={{
+              marginBottom: "30px",
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  margin: "0px",
+                }}
+              >
+                Sign Up
+              </h1>
+            </div>
           </div>
 
           <InputWrapper>
@@ -177,11 +189,7 @@ export default function SignUp() {
             <InputContainer>
               <InputInnerWrapper>
                 <InputTitle>EMAIL</InputTitle>
-                <Input
-                  type="email"
-                  name="email"
-                  onChange={handleInputChange}
-                />
+                <Input type="email" name="email" onChange={handleInputChange} />
               </InputInnerWrapper>
               <InputInnerWrapper>
                 <InputTitle>PHONE NUMBER</InputTitle>
@@ -214,14 +222,40 @@ export default function SignUp() {
             </InputContainer>
           </InputWrapper>
 
-          <div>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             <Button onClick={handleSubmit}>CREATE ACCOUNT</Button>
           </div>
 
-          <div>
-            <h5>
+          <div
+            style={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "end",
+            }}
+          >
+            <h5
+              style={{ fontStyle: "italic", fontWeight: "400", margin: "0px" }}
+            >
               Already have an account?{" "}
-              <a href="/SignIn">Sign in</a>
+              <a
+                href="/SignIn"
+                style={{
+                  fontStyle: "italic",
+                  fontWeight: "500",
+                  margin: "0px",
+                }}
+              >
+                Sign in
+              </a>
             </h5>
           </div>
 
