@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Wrapper = styled.div`
   display: flex;
@@ -79,97 +81,152 @@ const InputTitle = styled.h5`
   margin-bottom: 5px;
 `;
 
-export default function index() {
+export default function SignUp() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: ""
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Check if password and confirm password match
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Password and confirm password do not match!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Sign up successful");
+
+        // Show success notification
+        toast.success("Sign up successful!", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+
+        // Redirect to a success page or any other desired route
+        // router.push("/success");
+      } else {
+        console.error("Error creating customer:", response.status);
+
+        // Show error notification
+        toast.error("An error occurred. Please try again later.", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      console.error("Error creating customer:", error);
+
+      // Show error notification
+      toast.error("An error occurred. Please try again later.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
   return (
     <Background>
       <Wrapper>
         <FormContainer>
-          <div
-            style={{
-              marginBottom: "30px",
-            }}
-          >
-            <div>
-              <h1
-                style={{
-                  margin: "0px",
-                }}
-              >
-                Sign Up
-              </h1>
-            </div>
+          <div>
+            <h1>Sign Up</h1>
           </div>
 
           <InputWrapper>
             <InputContainer>
               <InputInnerWrapper>
                 <InputTitle>FIRST NAME</InputTitle>
-                <Input type="text" />
+                <Input
+                  type="text"
+                  name="firstName"
+                  onChange={handleInputChange}
+                />
               </InputInnerWrapper>
               <InputInnerWrapper>
                 <InputTitle>LAST NAME</InputTitle>
-                <Input type="text" />
+                <Input
+                  type="text"
+                  name="lastName"
+                  onChange={handleInputChange}
+                />
               </InputInnerWrapper>
             </InputContainer>
             <InputContainer>
               <InputInnerWrapper>
                 <InputTitle>EMAIL</InputTitle>
-                <Input type="email" />
+                <Input
+                  type="email"
+                  name="email"
+                  onChange={handleInputChange}
+                />
               </InputInnerWrapper>
               <InputInnerWrapper>
                 <InputTitle>PHONE NUMBER</InputTitle>
-                <Input type="number" pattern="[0-9]{11}"/>
+                <Input
+                  type="number"
+                  pattern="[0-9]{11}"
+                  name="phoneNumber"
+                  onChange={handleInputChange}
+                />
               </InputInnerWrapper>
             </InputContainer>
 
             <InputContainer>
               <InputInnerWrapper>
                 <InputTitle>PASSWORD</InputTitle>
-                <Input type="text" />
+                <Input
+                  type="password"
+                  name="password"
+                  onChange={handleInputChange}
+                />
               </InputInnerWrapper>
               <InputInnerWrapper>
                 <InputTitle>CONFIRM PASSWORD</InputTitle>
-                <Input type="text" />
+                <Input
+                  type="password"
+                  name="confirmPassword"
+                  onChange={handleInputChange}
+                />
               </InputInnerWrapper>
             </InputContainer>
           </InputWrapper>
 
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Button>CREATE ACCOUNT</Button>
+          <div>
+            <Button onClick={handleSubmit}>CREATE ACCOUNT</Button>
           </div>
 
-          <div
-            style={{
-              height: "100%",
-              width: "100%",
-              display: "flex",
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "end",
-            }}
-          >
-            <h5
-              style={{ fontStyle: "italic", fontWeight: "400", margin: "0px" }}
-            >
+          <div>
+            <h5>
               Already have an account?{" "}
-              <a
-                href="/SignIn"
-                style={{
-                  fontStyle: "italic",
-                  fontWeight: "500",
-                  margin: "0px",
-                }}
-              >
-                Sign in
-              </a>
+              <a href="/SignIn">Sign in</a>
             </h5>
           </div>
+
+          {/* Toast container */}
+          <ToastContainer />
         </FormContainer>
       </Wrapper>
     </Background>

@@ -1,7 +1,10 @@
-import React from "react";
+import React, {useState} from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 const Wrapper = styled.div`
@@ -54,15 +57,60 @@ const Button = styled.button`
   }
 `;
 
-export default function index() {
+export default function SignIn() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
   const router = useRouter();
 
-  const handleButtonClick = () => {
-    router.push("/Progress");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log("Sign in successful");
+
+        // Show success notification
+        toast.success("Sign in successful!");
+
+        // Redirect to the desired route
+        // router.push("/dashboard");
+        router.push("/Progress");
+      } else {
+        const data = await response.json();
+        console.error("Error signing in:", data.error);
+
+        // Show error notification
+        toast.error(data.error, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      console.error("Error signing in:", error);
+
+      // Show error notification
+      toast.error("An error occurred. Please try again later.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   return (
@@ -109,7 +157,7 @@ export default function index() {
               >
                 EMAIL
               </h5>
-              <Input type="email" />
+              <Input type="email" name="email" onChange={handleInputChange} />
             </div>
             <div
               style={{
@@ -126,7 +174,7 @@ export default function index() {
               >
                 PASSWORD
               </h5>
-              <Input type="password" />
+              <Input type="password" name="password" onChange={handleInputChange} />
             </div>
           </div>
 
@@ -137,7 +185,7 @@ export default function index() {
               flexDirection: "column",
             }}
           >
-            <Button onClick={handleButtonClick}>SIGN IN</Button>
+            <Button type="submit">SIGN IN</Button>
           </div>
 
           <div
@@ -166,6 +214,8 @@ export default function index() {
               </a>
             </h5>
           </div>
+          {/* Toast container */}
+          <ToastContainer />
         </FormContainer>
       </Wrapper>
     </Background>
