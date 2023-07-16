@@ -158,13 +158,15 @@ function Requests() {
   
   const [activeButton, setActiveButton] = useState("dashboard");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clickedRowData, setClickedRowData] = useState(null);
 
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName);
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (rowData) => {
     setIsModalOpen(true);
+    setClickedRowData(rowData);
   };
 
   const handleCloseModal = () => {
@@ -189,25 +191,29 @@ function Requests() {
           <Th style={{ width: "7%", paddingRight: "10px" }}>Status</Th>
         </THead>
         <TBody>
-        {[...Array(100)].map((_, index) => (
-                <>
-          <Tr key={index} onClick={handleOpenModal}>
-            
-            <Td style={{ width: "10%" }}>1001</Td>
-            <Td style={{ width: "15%" }}>Jhaslyn E. Gerochi</Td>
-            <Td style={{ width: "15%" }}>Jeth Nico T. Morado</Td>
-            <Td style={{ width: "10%" }}>Drill</Td>
-            <TdS style={{ width: "7%" }} status="On-going">
-              On-going
-            </TdS>
-          </Tr>
-          </>
-          ))}
-        </TBody>
+  {[...Array(100)].map((_, index) => (
+    <Tr key={index} onClick={() => handleOpenModal({  
+      referenceNumber: "1001",
+      fullName: "Jhaslyn E. Gerochi",
+      assignedRepairman: "Jeth Nico T. Morado",
+      toolUnderRepair: "Drill",
+      status: "On-going",
+    })}>
+      <Td style={{ width: "10%" }}>1001</Td>
+      <Td style={{ width: "15%" }}>Jhaslyn E. Gerochi</Td>
+      <Td style={{ width: "15%" }}>Jeth Nico T. Morado</Td>
+      <Td style={{ width: "10%" }}>Drill</Td>
+      <TdS style={{ width: "7%" }} status="On-going">
+        On-going
+      </TdS>
+    </Tr>
+  ))}
+</TBody>
+
       </TableWrapper>
       
     </Wrapper>
-    <Action isOpen={isModalOpen} onClose={handleCloseModal} />
+    <Action isOpen={isModalOpen} onClose={handleCloseModal}  rowData={clickedRowData} />
     </>
   );
 }

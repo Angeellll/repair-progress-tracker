@@ -24,6 +24,7 @@ model Customer {
 model Order {
   RefNumber       Int      @id @default(autoincrement())
   customerName    String
+  ContactNo       String
   ToolUnderRepair String
   dateAccepted    DateTime @default(now())
   etaCompletion   DateTime

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
-import Card from "@/Components/Client/Info/Progress/Card";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -110,8 +111,70 @@ const Button = styled.button`
   }
 `;
 
-const AddRequest = ({ isOpen, onClose }) => {
+export default function OrderForm({ isOpen, onClose }) {
+  const [orderData, setOrderData] = useState({
+    fullName: "",
+    phoneNumber: "",
+    dataAccepted: "",
+    estimatedCompletion: "",
+    toolUnderRepair: "",
+    assignedRepairman: "",
+    status: "",
+    progress: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Order Data:", orderData); 
+
+    try {
+      const response = await fetch("/api/reqOrder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response.ok) {
+        console.log("Order placed successfully");
+
+        // Show success notification
+        toast.success("Order placed successfully!", {
+          position: toast.POSITION.TOP_RIGHT, 
+        });
+
+        // Redirect to a success page or any other desired route
+        // router.push("/success");
+      } else {
+        console.error("Error placing order:", response.status);
+
+        // Show error notification
+        toast.error("An error occurred. Please try again later.", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+
+      // Show error notification
+      toast.error("An error occurred. Please try again later.", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setOrderData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    console.log("Order Data:", orderData)
+  };
+
   if (!isOpen) return null;
+
   return (
     <Wrapper>
       <Container>
@@ -122,38 +185,77 @@ const AddRequest = ({ isOpen, onClose }) => {
         <FormContainer>
           <FormTitle>Repair Request Form</FormTitle>
           <InputWrapper style={{ marginTop: "30px !important" }}>
-            <Input type="number" placeholder="Reference Number" readOnly />
+            <Input
+              type="text"
+              name="referenceNumber"
+              placeholder="Reference Number"
+              readOnly
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Full Name" />
+            <Input
+              type="text"
+              name="fullName"
+              placeholder="Full Name"
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="number" placeholder="Phone Number" />
+            <Input
+              type="number"
+              name="phoneNumber"
+              placeholder="Phone Number"
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-          <h5 style={{margin:" 0px", fontWeight: "500"}}>Data accepted</h5>
-            <Input type="date" placeholder="Date" />
+            <h5 style={{ margin: "0px", fontWeight: "500" }}>
+              Data accepted
+            </h5>
+            <Input
+              type="date"
+              name="dataAccepted"
+              placeholder="Date"
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-          <h5 style={{margin:" 0px", fontWeight: "500"}}>Estimated completion</h5>
-            <Input type="date" placeholder="Date" />
+            <h5 style={{ margin: "0px", fontWeight: "500" }}>
+              Estimated completion
+            </h5>
+            <Input
+              type="date"
+              name="estimatedCompletion"
+              placeholder="Date"
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Tool under repair" />
+            <Input
+              type="text"
+              name="toolUnderRepair"
+              placeholder="Tool under repair"
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Assigned repairman" />
+            <Input
+              type="text"
+              name="assignedRepairman"
+              placeholder="Assigned repairman"
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Select>
+            <Select name="status" onChange={handleInputChange}>
               <option readOnly>Status</option>
               <option style={{ color: "#5EBF7F" }}>Finished</option>
               <option style={{ color: "#71C4D7" }}>On-going</option>
               <option style={{ color: "#C85D63" }}>Due</option>
             </Select>
-            <Select>
+            <Select name="progress" onChange={handleInputChange}>
               <option readOnly>Progress</option>
               <option>100%</option>
               <option>75%</option>
@@ -162,11 +264,10 @@ const AddRequest = ({ isOpen, onClose }) => {
               <option>10%</option>
             </Select>
           </InputWrapper>
-          <Button>CONFIRM REQUEST </Button>
+          <Button onClick={handleSubmit}>CONFIRM REQUEST</Button>
         </FormContainer>
       </Container>
+      <ToastContainer />
     </Wrapper>
   );
-};
-
-export default AddRequest;
+}
