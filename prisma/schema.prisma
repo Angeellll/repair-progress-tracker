@@ -31,6 +31,9 @@ model Order {
   OrderStatus     String
   OrderProgress   String
   RepairmanName   String
+
+  @@unique([CustomerName, ContactNo])
+  @@index([CustomerName, ContactNo])
 }
 
 model Repairman {
