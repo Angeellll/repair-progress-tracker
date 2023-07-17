@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Wrapper = styled.div`
@@ -111,12 +111,12 @@ const Button = styled.button`
   }
 `;
 
-export default function OrderForm({ isOpen, onClose }) {
-  const [orderData, setOrderData] = useState({
+const AddRequest = ({ isOpen, onClose }) => {
+  const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
-    dataAccepted: "",
-    estimatedCompletion: "",
+    dateAccepted: "",
+    etaCompletion: "",
     toolUnderRepair: "",
     assignedRepairman: "",
     status: "",
@@ -125,52 +125,55 @@ export default function OrderForm({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Order Data:", orderData); 
 
     try {
-      const response = await fetch("/api/reqOrder", {
+      const response = await fetch("/api/createOrder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        console.log("Order placed successfully");
+        // Reset form
+        setFormData({
+          fullName: "",
+          phoneNumber: "",
+          dateAccepted: "",
+          etaCompletion: "",
+          toolUnderRepair: "",
+          assignedRepairman: "",
+          status: "",
+          progress: "",
+        });
 
         // Show success notification
-        toast.success("Order placed successfully!", {
-          position: toast.POSITION.TOP_RIGHT, 
-        });
+        toast.success("Order created successfully!");
 
-        // Redirect to a success page or any other desired route
-        // router.push("/success");
+        // Close the modal
+        onClose();
       } else {
-        console.error("Error placing order:", response.status);
+        const data = await response.json();
+        console.error("Error creating order:", data.error);
 
         // Show error notification
-        toast.error("An error occurred. Please try again later.", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error(data.error);
       }
     } catch (error) {
-      console.error("Error placing order:", error);
+      console.error("Error creating order:", error);
 
       // Show error notification
-      toast.error("An error occurred. Please try again later.", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.error("An error occurred. Please try again later.");
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setOrderData((prevData) => ({
+    setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    console.log("Order Data:", orderData)
   };
 
   if (!isOpen) return null;
@@ -182,81 +185,81 @@ export default function OrderForm({ isOpen, onClose }) {
           <Icon onClick={onClose} icon="mingcute:close-line" color="#03045e" />
         </Close>
 
-        <FormContainer>
+        <FormContainer onSubmit={handleSubmit}>
           <FormTitle>Repair Request Form</FormTitle>
           <InputWrapper style={{ marginTop: "30px !important" }}>
             <Input
               type="text"
-              name="referenceNumber"
-              placeholder="Reference Number"
-              readOnly
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              placeholder="Full Name"
             />
           </InputWrapper>
           <InputWrapper>
             <Input
               type="text"
-              name="fullName"
-              placeholder="Full Name"
-              onChange={handleInputChange}
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <Input
-              type="number"
               name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleInputChange}
               placeholder="Phone Number"
-              onChange={handleInputChange}
             />
           </InputWrapper>
           <InputWrapper>
-            <h5 style={{ margin: "0px", fontWeight: "500" }}>
-              Data accepted
-            </h5>
             <Input
               type="date"
-              name="dataAccepted"
-              placeholder="Date"
+              name="dateAccepted"
+              value={formData.dateAccepted}
               onChange={handleInputChange}
+              placeholder="Date Accepted"
             />
           </InputWrapper>
           <InputWrapper>
-            <h5 style={{ margin: "0px", fontWeight: "500" }}>
-              Estimated completion
-            </h5>
             <Input
               type="date"
-              name="estimatedCompletion"
-              placeholder="Date"
+              name="etaCompletion"
+              value={formData.etaCompletion}
               onChange={handleInputChange}
+              placeholder="Estimated Completion"
             />
           </InputWrapper>
           <InputWrapper>
             <Input
               type="text"
               name="toolUnderRepair"
-              placeholder="Tool under repair"
+              value={formData.toolUnderRepair}
               onChange={handleInputChange}
+              placeholder="Tool under Repair"
             />
           </InputWrapper>
           <InputWrapper>
             <Input
               type="text"
               name="assignedRepairman"
-              placeholder="Assigned repairman"
+              value={formData.assignedRepairman}
               onChange={handleInputChange}
+              placeholder="Assigned Repairman"
             />
           </InputWrapper>
           <InputWrapper
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Select name="status" onChange={handleInputChange}>
-              <option readOnly>Status</option>
+            <Select
+              name="status"
+              value={formData.status}
+              onChange={handleInputChange}
+            >
+              <option>Status</option>
               <option style={{ color: "#5EBF7F" }}>Finished</option>
               <option style={{ color: "#71C4D7" }}>On-going</option>
               <option style={{ color: "#C85D63" }}>Due</option>
             </Select>
-            <Select name="progress" onChange={handleInputChange}>
-              <option readOnly>Progress</option>
+            <Select
+              name="progress"
+              value={formData.progress}
+              onChange={handleInputChange}
+            >
+              <option>Progress</option>
               <option>100%</option>
               <option>75%</option>
               <option>50%</option>
@@ -264,10 +267,11 @@ export default function OrderForm({ isOpen, onClose }) {
               <option>10%</option>
             </Select>
           </InputWrapper>
-          <Button onClick={handleSubmit}>CONFIRM REQUEST</Button>
+          <Button type="submit">CONFIRM REQUEST</Button>
         </FormContainer>
       </Container>
-      <ToastContainer />
     </Wrapper>
   );
-}
+};
+
+export default AddRequest;

@@ -1,7 +1,7 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { Icon } from "@iconify/react";
-import Action from "../Requests/Action"
+import Action from "../Requests/Action";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -154,15 +154,9 @@ const Tr = styled.tr`
 `;
 
 function Requests() {
-
-  
-  const [activeButton, setActiveButton] = useState("dashboard");
+  const [requests, setRequests] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clickedRowData, setClickedRowData] = useState(null);
-
-  const handleButtonClick = (buttonName) => {
-    setActiveButton(buttonName);
-  };
 
   const handleOpenModal = (rowData) => {
     setIsModalOpen(true);
@@ -172,48 +166,70 @@ function Requests() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await fetch("/api/requests");
+        if (response.ok) {
+          const data = await response.json();
+          setRequests(data);
+        } else {
+          console.error("Error retrieving requests:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error retrieving requests:", error);
+      }
+    };
+
+    fetchRequests();
+  }, []);
+
   return (
     <>
-    <Wrapper>
-      <Header>
-        <Icon icon="mdi:tools" width="40" style={{ marginRight: "15px" }} />
-        <h2 style={{ fontFamily: "Roboto", fontWeight: "600" }}>
-          Request Details
-        </h2>
-        <Search placeholder="Search" />
-      </Header>
-      <TableWrapper>
-        <THead>
-          <Th style={{ width: "10%" }}>Reference Number</Th>
-          <Th style={{ width: "15%" }}>Client's Name</Th>
-          <Th style={{ width: "15%" }}>Assigned Repairman</Th>
-          <Th style={{ width: "10%" }}>Tool Under Repair</Th>
-          <Th style={{ width: "7%", paddingRight: "10px" }}>Status</Th>
-        </THead>
-        <TBody>
-  {[...Array(100)].map((_, index) => (
-    <Tr key={index} onClick={() => handleOpenModal({  
-      referenceNumber: "1001",
-      fullName: "Jhaslyn E. Gerochi",
-      assignedRepairman: "Jeth Nico T. Morado",
-      toolUnderRepair: "Drill",
-      status: "On-going",
-    })}>
-      <Td style={{ width: "10%" }}>1001</Td>
-      <Td style={{ width: "15%" }}>Jhaslyn E. Gerochi</Td>
-      <Td style={{ width: "15%" }}>Jeth Nico T. Morado</Td>
-      <Td style={{ width: "10%" }}>Drill</Td>
-      <TdS style={{ width: "7%" }} status="On-going">
-        On-going
-      </TdS>
-    </Tr>
-  ))}
-</TBody>
-
-      </TableWrapper>
-      
-    </Wrapper>
-    <Action isOpen={isModalOpen} onClose={handleCloseModal}  rowData={clickedRowData} />
+      <Wrapper>
+        <Header>
+          <Icon
+            icon="mdi:tools"
+            width="40"
+            style={{ marginRight: "15px" }}
+          />
+          <h2 style={{ fontFamily: "Roboto", fontWeight: "600" }}>
+            Request Details
+          </h2>
+          <Search placeholder="Search" />
+        </Header>
+        <TableWrapper>
+          <THead>
+            <Th style={{ width: "10%" }}>Reference Number</Th>
+            <Th style={{ width: "15%" }}>Client's Name</Th>
+            <Th style={{ width: "15%" }}>Assigned Repairman</Th>
+            <Th style={{ width: "10%" }}>Tool Under Repair</Th>
+            <Th style={{ width: "7%", paddingRight: "10px" }}>Status</Th>
+          </THead>
+          <TBody>
+            {requests.map((request) => (
+              <Tr
+                key={request.RefNumber}
+                onClick={() => handleOpenModal(request)}
+              >
+                <Td style={{ width: "10%" }}>{request.RefNumber}</Td>
+                <Td style={{ width: "15%" }}>{request.CustomerName}</Td>
+                <Td style={{ width: "15%" }}>{request.RepairmanName}</Td>
+                <Td style={{ width: "10%" }}>{request.ToolUnderRepair}</Td>
+                <TdS style={{ width: "7%" }} status={request.OrderStatus}>
+                  {request.OrderStatus}
+                </TdS>
+              </Tr>
+            ))}
+          </TBody>
+        </TableWrapper>
+      </Wrapper>
+      <Action
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        rowData={clickedRowData}
+      />
     </>
   );
 }

@@ -4,38 +4,37 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    try {
-      await prisma.$queryRaw`SELECT 1;`;
+    const {
+      fullName,
+      phoneNumber,
+      dateAccepted,
+      etaCompletion,
+      toolUnderRepair,
+      assignedRepairman,
+      status,
+      progress,
+    } = req.body;
 
-      const {
-        fullName,
-        phoneNumber,
-        dataAccepted,
-        estimatedCompletion,
-        toolUnderRepair,
-        assignedRepairman,
-        status,
-        progress,
-      } = req.body;
+    try {
+      const isoDateAccepted = new Date(dateAccepted).toISOString();
+      const isoEtaCompletion = new Date(etaCompletion).toISOString();
 
       const order = await prisma.order.create({
         data: {
-          customerName: fullName,
+          CustomerName: fullName,
           ContactNo: phoneNumber,
-          dateAccepted: dataAccepted,
-          etaCompletion: estimatedCompletion,
           ToolUnderRepair: toolUnderRepair,
-          RepairmanName: assignedRepairman,
+          DateAccepted: isoDateAccepted,
+          EtaCompletion: isoEtaCompletion,
           OrderStatus: status,
           OrderProgress: progress,
+          RepairmanName: assignedRepairman,
         },
       });
 
-      console.log("Order created:", order);
-
-      return res.status(200).json({ message: "Order placed successfully" });
+      return res.status(200).json(order);
     } catch (error) {
-      console.error("Error placing order:", error);
+      console.error("Error creating order:", error);
 
       return res
         .status(500)
