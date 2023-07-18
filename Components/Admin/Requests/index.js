@@ -172,7 +172,7 @@ function Requests() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
-  
+
   const refreshRequests = async () => {
     try {
       const response = await fetch("/api/requests");

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
 import Card from "@/Components/Client/Info/Progress/Card";
@@ -110,10 +110,119 @@ const Button = styled.button`
   }
 `;
 
-const AddRequest = ({ isOpen, onClose, rowData, handleUpdateRequest }) => {
-  if (!isOpen) return null;
+const Action = ({ isOpen, onClose, rowData }) => {
+  const [formValues, setFormValues] = useState({
+    referenceNumber: "",
+    fullName: "",
+    phoneNumber: "",
+    dateAccepted: "",
+    estimatedCompletion: "",
+    toolUnderRepair: "",
+    assignedRepairman: "",
+    status: "",
+    progress: "",
+  });
 
-  const { referenceNumber, fullName, phoneNumber, dateAccepted, estimatedCompletion, toolUnderRepair, assignedRepairman, status, progress } = rowData;
+  useEffect(() => {
+    if (isOpen && rowData) {
+      const {
+        RefNumber,
+        CustomerName,
+        ContactNo,
+        DateAccepted,
+        EtaCompletion,
+        ToolUnderRepair,
+        RepairmanName,
+        OrderStatus,
+        OrderProgress,
+      } = rowData;
+  
+      setFormValues({
+        ...formValues,
+        referenceNumber: RefNumber || "",
+        fullName: CustomerName || "",
+        phoneNumber: ContactNo || "",
+        dateAccepted: DateAccepted ? formatDate(DateAccepted) : "",
+        estimatedCompletion: EtaCompletion ? formatDate(EtaCompletion) : "",
+        toolUnderRepair: ToolUnderRepair || "",
+        assignedRepairman: RepairmanName || "",
+        status: OrderStatus || "",
+        progress: OrderProgress || "",
+      });
+    }
+  }, [isOpen, rowData]);
+  
+  // Helper function to format the date as "mm/dd/yyyy"
+  const formatDate = (dateString) => {
+    const dateObj = new Date(dateString);
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    const {
+      referenceNumber,
+      fullName,
+      phoneNumber,
+      dateAccepted,
+      estimatedCompletion,
+      toolUnderRepair,
+      assignedRepairman,
+      status,
+      progress,
+    } = formValues;
+
+    try {
+      const response = await fetch("/api/updateRequest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          referenceNumber,
+          fullName,
+          phoneNumber,
+          dateAccepted: new Date(dateAccepted).toISOString(),
+          estimatedCompletion: new Date(estimatedCompletion).toISOString(),
+          toolUnderRepair,
+          assignedRepairman,
+          status,
+          progress,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedOrder = await response.json();
+        console.log("Order updated:", updatedOrder);
+        onClose();
+      } else {
+        console.error("Error updating order:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+  
+    // Convert ISO format date to desired format
+    const formattedValue =
+      name === "dateAccepted" || name === "estimatedCompletion"
+        ? new Date(value).toLocaleDateString("en-GB")
+        : value;
+  
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: formattedValue,
+    }));
+  };
+
+  if (!isOpen) return null;
 
   return (
     <Wrapper>
@@ -125,38 +234,90 @@ const AddRequest = ({ isOpen, onClose, rowData, handleUpdateRequest }) => {
         <FormContainer onSubmit={handleFormSubmit}>
           <FormTitle>Repair Request Form</FormTitle>
           <InputWrapper style={{ marginTop: "30px !important" }}>
-            <Input type="number" placeholder="Reference Number" readOnly />
+            <Input
+              type="number"
+              placeholder="Reference Number"
+              name="referenceNumber"
+              value={formValues.referenceNumber}
+              readOnly
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Full Name" value={fullName} />
+            <Input
+              type="text"
+              placeholder="Full Name"
+              name="fullName"
+              value={formValues.fullName}
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="number" placeholder="Phone Number" value={phoneNumber} />
+            <Input
+              type="number"
+              placeholder="Phone Number"
+              name="phoneNumber"
+              value={formValues.phoneNumber}
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-          <h5 style={{margin:" 0px", fontWeight: "500"}}>Date accepted</h5>
-            <Input type="date" placeholder="Date" value={dateAccepted}  />
+            <h5 style={{ margin: "0px", fontWeight: "500" }}>Date accepted</h5>
+            <Input
+              type="date"
+              placeholder="Date"
+              name="dateAccepted"
+              value={formValues.dateAccepted}
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-          <h5 style={{margin:" 0px", fontWeight: "500"}}>Estimated completion</h5>
-            <Input type="date" placeholder="Date" value={estimatedCompletion}  />
+            <h5 style={{ margin: "0px", fontWeight: "500" }}>
+              Estimated completion
+            </h5>
+            <Input
+              type="date"
+              placeholder="Date"
+              name="estimatedCompletion"
+              value={formValues.estimatedCompletion}
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Tool under repair" value={toolUnderRepair}/>
+            <Input
+              type="text"
+              placeholder="Tool under repair"
+              name="toolUnderRepair"
+              value={formValues.toolUnderRepair}
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Assigned repairman" value={assignedRepairman}/>
+            <Input
+              type="text"
+              placeholder="Assigned repairman"
+              name="assignedRepairman"
+              value={formValues.assignedRepairman}
+              onChange={handleInputChange}
+            />
           </InputWrapper>
           <InputWrapper
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Select value={status}> 
+            <Select
+              name="status"
+              value={formValues.status}
+              onChange={handleInputChange}
+            >
               <option readOnly>Status</option>
               <option style={{ color: "#5EBF7F" }}>Finished</option>
               <option style={{ color: "#71C4D7" }}>On-going</option>
               <option style={{ color: "#C85D63" }}>Due</option>
             </Select>
-            <Select value={progress}>
+            <Select
+              name="progress"
+              value={formValues.progress}
+              onChange={handleInputChange}
+            >
               <option readOnly>Progress</option>
               <option>100%</option>
               <option>75%</option>
@@ -165,11 +326,11 @@ const AddRequest = ({ isOpen, onClose, rowData, handleUpdateRequest }) => {
               <option>10%</option>
             </Select>
           </InputWrapper>
-          <Button onClick={handleSubmit}>SAVE CHANGES </Button>
+          <Button type="submit">SAVE CHANGES</Button>
         </FormContainer>
       </Container>
     </Wrapper>
   );
 };
 
-export default AddRequest;
+export default Action;
