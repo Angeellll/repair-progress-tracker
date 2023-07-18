@@ -20,10 +20,11 @@ model Customer {
 
 model Order {
   RefNumber       Int      @id @default(autoincrement())
-  customerName    String
+  CustomerName    String
+  ContactNo       String
   ToolUnderRepair String
-  dateAccepted    DateTime @default(now())
-  etaCompletion   DateTime
+  DateAccepted    DateTime @default(now())
+  EtaCompletion   DateTime
   OrderStatus     String
   OrderProgress   String
   RepairmanName   String
