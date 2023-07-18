@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
+import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -82,6 +83,9 @@ const InputTitle = styled.h5`
 `;
 
 export default function SignUp() {
+
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -92,6 +96,7 @@ export default function SignUp() {
   });
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     // Check if password and confirm password match
@@ -114,13 +119,12 @@ export default function SignUp() {
       if (response.ok) {
         console.log("Sign up successful");
 
-        // Show success notification
-        toast.success("Sign up successful!", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        // // Show success notification
+        toast.success("Sign in successful!");
 
         // Redirect to a success page or any other desired route
-        // router.push("/success");
+        router.push("/SignIn");
+
       } else {
         console.error("Error creating customer:", response.status);
 
@@ -150,7 +154,7 @@ export default function SignUp() {
   return (
     <Background>
       <Wrapper>
-        <FormContainer>
+        <FormContainer  onSubmit={handleSubmit}>
           <div
             style={{
               marginBottom: "30px",
@@ -229,7 +233,7 @@ export default function SignUp() {
               justifyContent: "center",
             }}
           >
-            <Button onClick={handleSubmit}>CREATE ACCOUNT</Button>
+            <Button type="submit">CREATE ACCOUNT</Button>
           </div>
 
           <div
