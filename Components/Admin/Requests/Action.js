@@ -110,8 +110,11 @@ const Button = styled.button`
   }
 `;
 
-const AddRequest = ({ isOpen, onClose }) => {
+const AddRequest = ({ isOpen, onClose, rowData, handleUpdateRequest }) => {
   if (!isOpen) return null;
+
+  const { referenceNumber, fullName, phoneNumber, dateAccepted, estimatedCompletion, toolUnderRepair, assignedRepairman, status, progress } = rowData;
+
   return (
     <Wrapper>
       <Container>
@@ -119,41 +122,41 @@ const AddRequest = ({ isOpen, onClose }) => {
           <Icon onClick={onClose} icon="mingcute:close-line" color="#03045e" />
         </Close>
 
-        <FormContainer>
+        <FormContainer onSubmit={handleFormSubmit}>
           <FormTitle>Repair Request Form</FormTitle>
           <InputWrapper style={{ marginTop: "30px !important" }}>
             <Input type="number" placeholder="Reference Number" readOnly />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Full Name" />
+            <Input type="text" placeholder="Full Name" value={fullName} />
           </InputWrapper>
           <InputWrapper>
-            <Input type="number" placeholder="Phone Number" />
+            <Input type="number" placeholder="Phone Number" value={phoneNumber} />
           </InputWrapper>
           <InputWrapper>
-          <h5 style={{margin:" 0px", fontWeight: "500"}}>Data accepted</h5>
-            <Input type="date" placeholder="Date" />
+          <h5 style={{margin:" 0px", fontWeight: "500"}}>Date accepted</h5>
+            <Input type="date" placeholder="Date" value={dateAccepted}  />
           </InputWrapper>
           <InputWrapper>
           <h5 style={{margin:" 0px", fontWeight: "500"}}>Estimated completion</h5>
-            <Input type="date" placeholder="Date" />
+            <Input type="date" placeholder="Date" value={estimatedCompletion}  />
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Tool under repair" />
+            <Input type="text" placeholder="Tool under repair" value={toolUnderRepair}/>
           </InputWrapper>
           <InputWrapper>
-            <Input type="text" placeholder="Assigned repairman" />
+            <Input type="text" placeholder="Assigned repairman" value={assignedRepairman}/>
           </InputWrapper>
           <InputWrapper
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Select>
+            <Select value={status}> 
               <option readOnly>Status</option>
               <option style={{ color: "#5EBF7F" }}>Finished</option>
               <option style={{ color: "#71C4D7" }}>On-going</option>
               <option style={{ color: "#C85D63" }}>Due</option>
             </Select>
-            <Select>
+            <Select value={progress}>
               <option readOnly>Progress</option>
               <option>100%</option>
               <option>75%</option>
@@ -162,7 +165,7 @@ const AddRequest = ({ isOpen, onClose }) => {
               <option>10%</option>
             </Select>
           </InputWrapper>
-          <Button>SAVE CHANGES </Button>
+          <Button onClick={handleSubmit}>SAVE CHANGES </Button>
         </FormContainer>
       </Container>
     </Wrapper>
