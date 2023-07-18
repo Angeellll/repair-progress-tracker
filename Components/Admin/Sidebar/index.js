@@ -206,7 +206,7 @@ function Index() {
             </span>
             FAQ
           </Choice>
-
+{/* 
           <Choice onClick={() => handleButtonClick("trash")}>
             <span
               style={{
@@ -218,7 +218,7 @@ function Index() {
               <Icon icon="zondicons:trash" width="20" />
             </span>
             Trash
-          </Choice>
+          </Choice> */}
         </Option>
       </SideMenu>
       <Content>
@@ -226,7 +226,7 @@ function Index() {
           {activeButton === "dashboard" && <Dashboard />}
           {activeButton === "requests" && <Requests />}
           {activeButton === "chats" && <Chat />}
-          {activeButton === "trash" && <Trash />}
+          {/* {activeButton === "trash" && <Trash />} */}
         </Container>
         
       </Content>

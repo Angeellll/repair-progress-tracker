@@ -19,8 +19,8 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  width: 80%;
-  height: 80%;
+  width: 1300px;
+  height: 650px;
   background-color: white;
   display: grid;
   grid-template-rows: auto 1fr;
