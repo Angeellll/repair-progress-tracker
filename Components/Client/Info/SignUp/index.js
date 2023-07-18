@@ -1,6 +1,7 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
+import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -82,16 +83,20 @@ const InputTitle = styled.h5`
 `;
 
 export default function SignUp() {
+
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     // Check if password and confirm password match
@@ -114,13 +119,12 @@ export default function SignUp() {
       if (response.ok) {
         console.log("Sign up successful");
 
-        // Show success notification
-        toast.success("Sign up successful!", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        // // Show success notification
+        toast.success("Sign in successful!");
 
         // Redirect to a success page or any other desired route
-        // router.push("/success");
+        router.push("/SignIn");
+
       } else {
         console.error("Error creating customer:", response.status);
 
@@ -143,16 +147,28 @@ export default function SignUp() {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
   return (
     <Background>
       <Wrapper>
-        <FormContainer>
-          <div>
-            <h1>Sign Up</h1>
+        <FormContainer  onSubmit={handleSubmit}>
+          <div
+            style={{
+              marginBottom: "30px",
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  margin: "0px",
+                }}
+              >
+                Sign Up
+              </h1>
+            </div>
           </div>
 
           <InputWrapper>
@@ -177,11 +193,7 @@ export default function SignUp() {
             <InputContainer>
               <InputInnerWrapper>
                 <InputTitle>EMAIL</InputTitle>
-                <Input
-                  type="email"
-                  name="email"
-                  onChange={handleInputChange}
-                />
+                <Input type="email" name="email" onChange={handleInputChange} />
               </InputInnerWrapper>
               <InputInnerWrapper>
                 <InputTitle>PHONE NUMBER</InputTitle>
@@ -214,14 +226,40 @@ export default function SignUp() {
             </InputContainer>
           </InputWrapper>
 
-          <div>
-            <Button onClick={handleSubmit}>CREATE ACCOUNT</Button>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Button type="submit">CREATE ACCOUNT</Button>
           </div>
 
-          <div>
-            <h5>
+          <div
+            style={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "end",
+            }}
+          >
+            <h5
+              style={{ fontStyle: "italic", fontWeight: "400", margin: "0px" }}
+            >
               Already have an account?{" "}
-              <a href="/SignIn">Sign in</a>
+              <a
+                href="/SignIn"
+                style={{
+                  fontStyle: "italic",
+                  fontWeight: "500",
+                  margin: "0px",
+                }}
+              >
+                Sign in
+              </a>
             </h5>
           </div>
 
