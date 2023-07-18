@@ -153,6 +153,12 @@ const Tr = styled.tr`
   }
 `;
 
+const RefreshButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+`;
+
 function Requests() {
   const [requests, setRequests] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -165,6 +171,20 @@ function Requests() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+  
+  const refreshRequests = async () => {
+    try {
+      const response = await fetch("/api/requests");
+      if (response.ok) {
+        const data = await response.json();
+        setRequests(data);
+      } else {
+        console.error("Error retrieving requests:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error retrieving requests:", error);
+    }
   };
 
   useEffect(() => {
@@ -198,6 +218,9 @@ function Requests() {
             Request Details
           </h2>
           <Search placeholder="Search" />
+          <RefreshButton onClick={refreshRequests}>
+            <Icon icon="bi:arrow-counterclockwise" width="20" />
+          </RefreshButton>
         </Header>
         <TableWrapper>
           <THead>

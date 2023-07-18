@@ -110,11 +110,10 @@ const Button = styled.button`
   }
 `;
 
-const AddRequest = ({ isOpen, onClose, rowData }) => {
+const AddRequest = ({ isOpen, onClose, rowData, handleUpdateRequest }) => {
   if (!isOpen) return null;
 
   const { referenceNumber, fullName, phoneNumber, dateAccepted, estimatedCompletion, toolUnderRepair, assignedRepairman, status, progress } = rowData;
-
 
   return (
     <Wrapper>
@@ -123,7 +122,7 @@ const AddRequest = ({ isOpen, onClose, rowData }) => {
           <Icon onClick={onClose} icon="mingcute:close-line" color="#03045e" />
         </Close>
 
-        <FormContainer>
+        <FormContainer onSubmit={handleFormSubmit}>
           <FormTitle>Repair Request Form</FormTitle>
           <InputWrapper style={{ marginTop: "30px !important" }}>
             <Input type="number" placeholder="Reference Number" readOnly />
@@ -166,7 +165,7 @@ const AddRequest = ({ isOpen, onClose, rowData }) => {
               <option>10%</option>
             </Select>
           </InputWrapper>
-          <Button>SAVE CHANGES </Button>
+          <Button onClick={handleSubmit}>SAVE CHANGES </Button>
         </FormContainer>
       </Container>
     </Wrapper>

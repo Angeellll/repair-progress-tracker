@@ -125,7 +125,7 @@ const AddRequest = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch("/api/createOrder", {
         method: "POST",
@@ -134,7 +134,7 @@ const AddRequest = ({ isOpen, onClose }) => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         // Reset form
         setFormData({
@@ -147,22 +147,22 @@ const AddRequest = ({ isOpen, onClose }) => {
           status: "",
           progress: "",
         });
-
+  
         // Show success notification
         toast.success("Order created successfully!");
-
+  
         // Close the modal
         onClose();
       } else {
         const data = await response.json();
         console.error("Error creating order:", data.error);
-
+  
         // Show error notification
         toast.error(data.error);
       }
     } catch (error) {
       console.error("Error creating order:", error);
-
+  
       // Show error notification
       toast.error("An error occurred. Please try again later.");
     }
