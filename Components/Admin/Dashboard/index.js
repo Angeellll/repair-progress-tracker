@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { Icon } from "@iconify/react";
 import BarGraph from "./BarGraph";
@@ -64,12 +64,72 @@ const CardContainer = styled.div`
   overflow: hidden; /* Added to hide overflowing content */
 `;
 
+const Container = styled.div`
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  height: 300px;
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  flex-direction: column;
+  padding: 20px;
+`;
+
+const Container1 = styled.div`
+  overflow: auto; /* Added to hide overflowing content */
+  width: 100%;
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #d4d4d4;
+    border-radius: 4px;
+  }
+`;
+
 const P = styled.p`
   margin: 0px;
   font-weight: 500;
 `;
 
 function Dashboard() {
+  const [requests, setRequests] = useState([]);
+
+  const formatDate = (dateString) => {
+    const dateObject = new Date(dateString);
+    const formattedDate = dateObject.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    return formattedDate;
+  };
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await fetch("/api/requests");
+        if (response.ok) {
+          const data = await response.json();
+          setRequests(data);
+        } else {
+          console.error("Error retrieving requests:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error retrieving requests:", error);
+      }
+    };
+
+    fetchRequests();
+  }, []);
+
   return (
     <Wrapper>
       <Header>
@@ -79,7 +139,7 @@ function Dashboard() {
           style={{ marginRight: "15px" }}
         />
         <h2 style={{ fontFamily: "Roboto", fontWeight: "600" }}>Dashboard</h2>
-        <Search placeholder="Search" />
+        {/* <Search placeholder="Search" /> */}
       </Header>
       <div
         style={{
@@ -119,16 +179,44 @@ function Dashboard() {
             </CardContainer>
           </CardWrapper>
         </div>
-        <div style={{ gridRow: "2", display: "grid", gridTemplateColumns: "2" }}>
-          <CardWrapper style={{gridColumn: "1"}}>
-          <CardContainer >
-            <BarGraph style={{ width: "100%", height: "100%" }} />
-          </CardContainer>
+        <div
+          style={{ gridRow: "2", display: "grid", gridTemplateColumns: "2" }}
+        >
+          <CardWrapper style={{ gridColumn: "1" }}>
+            <Container>
+              <h3>Pending Repair Requests</h3>
+              <Container1>
+                {requests.map((request) => (
+                  <>
+                    <P>
+                      <i>
+                        {" "}
+                        {request.RefNumber} - {request.ToolUnderRepair},{" "}
+                        {formatDate(request.EtaCompletion)}
+                      </i>
+                    </P>
+                  </>
+                ))}
+              </Container1>
+            </Container>
           </CardWrapper>
-          <CardWrapper style={{gridColumn: "2"}}>
-          <CardContainer >
-            <BarGraph style={{ width: "100%", height: "100%" }} />
-          </CardContainer>
+          <CardWrapper style={{ gridColumn: "2" }}>
+            <Container>
+              <h3>Transaction History</h3>
+              <Container1>
+                {requests.map((request) => (
+                  <>
+                    <P>
+                      <i>
+                        {" "}
+                        {request.RefNumber} - {request.ToolUnderRepair},{" "}
+                        {formatDate(request.EtaCompletion)}
+                      </i>
+                    </P>
+                  </>
+                ))}
+              </Container1>
+            </Container>
           </CardWrapper>
         </div>
       </div>

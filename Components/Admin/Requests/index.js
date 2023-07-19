@@ -217,7 +217,7 @@ function Requests() {
           <h2 style={{ fontFamily: "Roboto", fontWeight: "600" }}>
             Request Details
           </h2>
-          <Search placeholder="Search" />
+          {/* <Search placeholder="Search" /> */}
           <RefreshButton onClick={refreshRequests}>
             <Icon icon="bi:arrow-counterclockwise" width="20" />
           </RefreshButton>
