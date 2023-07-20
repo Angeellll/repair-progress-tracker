@@ -48,6 +48,13 @@ function Back() {
   const router = useRouter();
 
   const handleButtonClick = () => {
+    // Delete "referenceNumber" from cache before navigating back
+    try {
+      localStorage.removeItem("referenceNumber");
+    } catch (error) {
+      console.error("Error deleting reference number from cache:", error);
+    }
+    // Navigate back to "/"
     router.push("/");
   };
 
