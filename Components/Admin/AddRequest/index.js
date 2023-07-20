@@ -112,17 +112,26 @@ const Button = styled.button`
 `;
 
 const AddRequest = ({ isOpen, onClose }) => {
+
+  const getFormattedDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
-    dateAccepted: "",
-    etaCompletion: "",
+    dateAccepted: getFormattedDate(new Date()),
+    etaCompletion: getFormattedDate(new Date()),
     toolUnderRepair: "",
     assignedRepairman: "",
     status: "",
     progress: "",
     payment: "",
   });
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -208,7 +217,7 @@ const AddRequest = ({ isOpen, onClose }) => {
             />
           </InputWrapper>
           <InputWrapper>
-          <h5 style={{ margin: "0px", fontWeight: "500" }}>Date accepted</h5>
+            <h5 style={{ margin: "0px", fontWeight: "500" }}>Date accepted</h5>
             <Input
               type="date"
               name="dateAccepted"
@@ -218,7 +227,7 @@ const AddRequest = ({ isOpen, onClose }) => {
             />
           </InputWrapper>
           <InputWrapper>
-          <h5 style={{ margin: "0px", fontWeight: "500" }}>
+            <h5 style={{ margin: "0px", fontWeight: "500" }}>
               Estimated completion
             </h5>
             <Input
@@ -245,7 +254,9 @@ const AddRequest = ({ isOpen, onClose }) => {
               onChange={handleInputChange}
               style={{ width: "100%" }}
             >
-              <option  style={{ backgroundColor: "#D3D3D3" }}>Assigned Repairman</option>
+              <option style={{ backgroundColor: "#D3D3D3" }}>
+                Assigned Repairman
+              </option>
               <option>Jeth Newton</option>
               <option>Jasper Testyn</option>
               <option>Jhaslyn Lovelace</option>
