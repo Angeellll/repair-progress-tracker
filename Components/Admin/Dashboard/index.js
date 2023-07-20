@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { Icon } from "@iconify/react";
 import BarGraph from "./BarGraph";
+import appointments from "../PendingRequests";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -101,6 +102,7 @@ const P = styled.p`
 
 function Dashboard() {
   const [requests, setRequests] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
   const formatDate = (dateString) => {
     const dateObject = new Date(dateString);
@@ -128,6 +130,28 @@ function Dashboard() {
     };
 
     fetchRequests();
+  }, []);
+
+  const fetchAppointmentData = async () => {
+    try {
+      const response = await fetch("/api/appointment");
+      if (response.ok) {
+        const data = await response.json();
+        setAppointments(data);
+      } else {
+        console.error("Error retrieving appointments:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error retrieving appointments:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointmentData();
+
+    const interval = setInterval(fetchAppointmentData, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -184,15 +208,15 @@ function Dashboard() {
         >
           <CardWrapper style={{ gridColumn: "1" }}>
             <Container>
-              <h3>Pending Repair Requests</h3>
+              <h3>Pending Appointment Requests</h3>
               <Container1>
-                {requests.map((request) => (
+                {appointments.map((appointment) => (
                   <>
                     <P>
                       <i>
-                        {" "}
-                        {request.RefNumber} - {request.ToolUnderRepair},{" "}
-                        {formatDate(request.EtaCompletion)}
+                      
+                        {appointment.AppointmentID} - {appointment.Intent}, {" "}
+                        {formatDate(appointment.Date)}
                       </i>
                     </P>
                   </>
@@ -210,7 +234,7 @@ function Dashboard() {
                       <i>
                         {" "}
                         {request.RefNumber} - {request.ToolUnderRepair},{" "}
-                        {formatDate(request.EtaCompletion)}
+                        {formatDate(request.EtaCompletion)}, {request.PaymentStatus}
                       </i>
                     </P>
                   </>

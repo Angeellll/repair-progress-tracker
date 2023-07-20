@@ -1,0 +1,21 @@
+/*
+  Warnings:
+
+  - Added the required column `SetDate` to the `Appointment` table without a default value. This is not possible if the table is not empty.
+
+*/
+-- RedefineTables
+PRAGMA foreign_keys=OFF;
+CREATE TABLE "new_Appointment" (
+    "AppointmentID" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "ClientName" TEXT NOT NULL,
+    "Intent" TEXT NOT NULL,
+    "Date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "SetDate" DATETIME NOT NULL,
+    "AppointmentStatus" TEXT NOT NULL
+);
+INSERT INTO "new_Appointment" ("AppointmentID", "AppointmentStatus", "ClientName", "Date", "Intent") SELECT "AppointmentID", "AppointmentStatus", "ClientName", "Date", "Intent" FROM "Appointment";
+DROP TABLE "Appointment";
+ALTER TABLE "new_Appointment" RENAME TO "Appointment";
+PRAGMA foreign_key_check;
+PRAGMA foreign_keys=ON;

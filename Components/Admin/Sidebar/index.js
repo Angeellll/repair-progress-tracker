@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
-import Chat from "../FAQ";
-import Requests from "../Requests/index";
+import PendingRequests from "../PendingRequests";
+import Requests from "../Requests";
 import Trash from "../Trash";
 import Dashboard from "../Dashboard";
 import AddRequest from "../AddRequest";
@@ -194,7 +194,7 @@ function Index() {
             </span>
             Repair Request
           </Choice>
-          {/* <Choice onClick={() => handleButtonClick("chats")}>
+          <Choice onClick={() => handleButtonClick("pending")}>
             <span
               style={{
                 width: "50px",
@@ -202,10 +202,10 @@ function Index() {
                 justifyContent: "start",
               }}
             >
-              <Icon icon="mdi:customer-service" width="25" />
+              <Icon icon="material-symbols:pending-actions" width="25" />
             </span>
-            FAQ
-          </Choice> */}
+            Appointment Requests
+          </Choice>
 {/* 
           <Choice onClick={() => handleButtonClick("trash")}>
             <span
@@ -225,7 +225,7 @@ function Index() {
         <Container>
           {activeButton === "dashboard" && <Dashboard />}
           {activeButton === "requests" && <Requests />}
-          {activeButton === "chats" && <Chat />}
+          {activeButton === "pending" && <PendingRequests />}
           {/* {activeButton === "trash" && <Trash />} */}
         </Container>
         

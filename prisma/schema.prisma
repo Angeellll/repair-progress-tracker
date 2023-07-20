@@ -41,3 +41,12 @@ model Payment {
   PaymentStatus  String
   orderRefNumber Int
 }
+
+model Appointment {
+  AppointmentID     Int      @id @default(autoincrement())
+  ClientName        String
+  Intent            String
+  Date              DateTime @default(now())
+  SetDate           DateTime
+  AppointmentStatus String
+}

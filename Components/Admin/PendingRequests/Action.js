@@ -23,7 +23,7 @@ const Container = styled.div`
   background-color: white;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   width: 45%;
-  height: 90%;
+  height: 70%;
   display: grid;
   grid-template-rows: 5% 95%;
 `;
@@ -131,44 +131,27 @@ const Button1 = styled.button`
 
 const Action = ({ isOpen, onClose, rowData }) => {
   const [formValues, setFormValues] = useState({
-    referenceNumber: "",
-    fullName: "",
-    phoneNumber: "",
-    dateAccepted: "",
-    estimatedCompletion: "",
-    toolUnderRepair: "",
-    assignedRepairman: "",
-    status: "",
-    progress: "",
+    appointmentID: "",
+    clientName: "",
+    intent: "",
+    date: "",
+    setDate: "",
+    appointmentStatus: "",
   });
 
   useEffect(() => {
     if (isOpen && rowData) {
-      const {
-        RefNumber,
-        CustomerName,
-        ContactNo,
-        DateAccepted,
-        EtaCompletion,
-        ToolUnderRepair,
-        RepairmanName,
-        OrderStatus,
-        OrderProgress,
-        PaymentStatus,
-      } = rowData;
+      const { AppointmentID, ClientName, Intent, Date, SetDate, AppointmentStatus } =
+        rowData;
 
       setFormValues({
         ...formValues,
-        referenceNumber: RefNumber || "",
-        fullName: CustomerName || "",
-        phoneNumber: ContactNo || "",
-        dateAccepted: DateAccepted ? formatDate(DateAccepted) : "",
-        estimatedCompletion: EtaCompletion ? formatDate(EtaCompletion) : "",
-        toolUnderRepair: ToolUnderRepair || "",
-        assignedRepairman: RepairmanName || "",
-        status: OrderStatus || "",
-        progress: OrderProgress || "",
-        payment: PaymentStatus || "",
+        appointmentID: AppointmentID || "",
+        clientName: ClientName || "",
+        intent: Intent || "",
+        date: Date ? formatDate(Date) : "",
+        setDate: SetDate ? formatDate(SetDate) : "",
+        appointmentStatus: AppointmentStatus || "",
       });
     }
   }, [isOpen, rowData]);
@@ -184,42 +167,28 @@ const Action = ({ isOpen, onClose, rowData }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    const {
-      referenceNumber,
-      fullName,
-      phoneNumber,
-      dateAccepted,
-      estimatedCompletion,
-      toolUnderRepair,
-      assignedRepairman,
-      status,
-      progress,
-      payment,
-    } = formValues;
+    const { appointmentID, clientName, intent, date, setDate, appointmentStatus } =
+      formValues;
 
     try {
-      const response = await fetch("/api/updateRequest", {
+      const response = await fetch("/api/updateAppointment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          referenceNumber,
-          fullName,
-          phoneNumber,
-          dateAccepted: new Date(dateAccepted).toISOString(),
-          estimatedCompletion: new Date(estimatedCompletion).toISOString(),
-          toolUnderRepair,
-          assignedRepairman,
-          status,
-          progress,
-          payment,
+          appointmentID,
+          clientName,
+          intent,
+          date: new Date(date).toISOString(),
+          setDate: new Date(setDate).toISOString(),
+          appointmentStatus,
         }),
       });
 
       if (response.ok) {
-        const updatedOrder = await response.json();
-        console.log("Order updated:", updatedOrder);
+        const updateAppointment = await response.json();
+        console.log("Appointment updated:", updateAppointment);
         onClose();
       } else {
         console.error("Error updating order:", response.statusText);
@@ -241,7 +210,7 @@ const Action = ({ isOpen, onClose, rowData }) => {
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `/api/deleteRequest?referenceNumber=${formValues.referenceNumber}`,
+        `/api/appointmentDelete?appointmentID=${formValues.appointmentID}`,
         {
           method: "DELETE",
         }
@@ -271,123 +240,82 @@ const Action = ({ isOpen, onClose, rowData }) => {
         </Close>
 
         <FormContainer onSubmit={handleFormSubmit}>
-          <FormTitle>Repair Request Form</FormTitle>
+          <FormTitle>Appointment Form</FormTitle>
           <InputWrapper style={{ marginTop: "30px !important" }}>
             <Input
               type="number"
-              placeholder="Reference Number"
-              name="referenceNumber"
-              value={formValues.referenceNumber}
+              placeholder="Appointment ID"
+              name="appointmentID"
+              value={formValues.appointmentID}
               readOnly
             />
           </InputWrapper>
           <InputWrapper>
             <Input
               type="text"
-              placeholder="Full Name"
-              name="fullName"
-              value={formValues.fullName}
+              placeholder="Client Name"
+              name="clientName"
+              value={formValues.clientName}
               onChange={handleInputChange}
             />
           </InputWrapper>
           <InputWrapper>
-            <Input
-              type="number"
-              placeholder="Phone Number"
-              name="phoneNumber"
-              value={formValues.phoneNumber}
+            <Select
+              name="intent"
+              value={formValues.intent}
               onChange={handleInputChange}
-            />
+              style={{ width: "100%" }}
+            >
+              <option style={{ backgroundColor: "#D3D3D3" }} readOnly>
+                Intent
+              </option>
+              <option>Repair Service</option>
+              <option>Follow Ups</option>
+              <option>Other Concerns</option>
+            </Select>
           </InputWrapper>
           <InputWrapper>
-            <h5 style={{ margin: "0px", fontWeight: "500" }}>Date accepted</h5>
+            <h5 style={{ margin: "0px", fontWeight: "500" }}>Date Requested</h5>
             <Input
               type="date"
               placeholder="Date"
-              name="dateAccepted"
-              value={formValues.dateAccepted}
+              name="date"
+              value={formValues.date}
               onChange={handleInputChange}
             />
           </InputWrapper>
           <InputWrapper>
             <h5 style={{ margin: "0px", fontWeight: "500" }}>
-              Estimated completion
+              Set Appointment Date
             </h5>
             <Input
               type="date"
               placeholder="Date"
-              name="estimatedCompletion"
-              value={formValues.estimatedCompletion}
+              name="setDate"
+              value={formValues.setDate}
               onChange={handleInputChange}
             />
           </InputWrapper>
-          <InputWrapper>
-            <Input
-              type="text"
-              placeholder="Tool under repair"
-              name="toolUnderRepair"
-              value={formValues.toolUnderRepair}
-              onChange={handleInputChange}
-            />
-          </InputWrapper>
+
           <InputWrapper>
             <Select
-              name="assignedRepairman"
-              value={formValues.assignedRepairman}
+              name="appointmentStatus"
+              value={formValues.appointmentStatus}
               onChange={handleInputChange}
-              style={{ width: "100%" }}
-            >
-              <option style={{ backgroundColor: "#D3D3D3" }} readOnly>
-                Assigned Repairman
-              </option>
-              <option>Jeth Newton</option>
-              <option>Jasper Testyn</option>
-              <option>Jhaslyn Lovelace</option>
-            </Select>
-          </InputWrapper>
-          <InputWrapper
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Select
-              name="status"
-              value={formValues.status}
-              onChange={handleInputChange}
+              style={{
+                display: "flex",
+                width: "100%",
+              }}
             >
               <option style={{ backgroundColor: "#D3D3D3" }} readOnly>
                 Status
               </option>
-              <option style={{ color: "#5EBF7F" }}>Finished</option>
-              <option style={{ color: "#71C4D7" }}>On-going</option>
-              <option style={{ color: "#C85D63" }}>Due</option>
-            </Select>
-            <Select
-              name="progress"
-              value={formValues.progress}
-              onChange={handleInputChange}
-            >
-              <option style={{ backgroundColor: "#D3D3D3" }} readOnly>
-                Progress
-              </option>
-              <option>100%</option>
-              <option>75%</option>
-              <option>50%</option>
-              <option>25%</option>
-              <option>10%</option>
+              <option style={{ color: "#5EBF7F" }}>Approved</option>
+              <option style={{ color: "#71C4D7" }}>Pending</option>
+              <option style={{ color: "#C85D63" }}>Declined</option>
             </Select>
           </InputWrapper>
-          <InputWrapper>
-            <Select
-              name="payment"
-              value={formValues.payment}
-              onChange={handleInputChange}
-              style={{ width: "100%" }}
-            >
-              <option>Payment</option>
-              <option style={{ color: "#5EBF7F" }}>Fully Paid</option>
-              <option style={{ color: "#71C4D7" }}>Downpayment</option>
-              <option style={{ color: "#C85D63" }}>Unpaid</option>
-            </Select>
-          </InputWrapper>
+
           <div
             style={{
               display: "flex",
