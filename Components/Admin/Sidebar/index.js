@@ -194,7 +194,7 @@ function Index() {
             </span>
             Repair Request
           </Choice>
-          <Choice onClick={() => handleButtonClick("chats")}>
+          {/* <Choice onClick={() => handleButtonClick("chats")}>
             <span
               style={{
                 width: "50px",
@@ -205,7 +205,7 @@ function Index() {
               <Icon icon="mdi:customer-service" width="25" />
             </span>
             FAQ
-          </Choice>
+          </Choice> */}
 {/* 
           <Choice onClick={() => handleButtonClick("trash")}>
             <span

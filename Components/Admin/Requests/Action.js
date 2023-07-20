@@ -103,7 +103,7 @@ const Button = styled.button`
   padding: 10px 25px 10px 25px;
   cursor: pointer;
   border: none;
-  margin-top: 30px;
+  margin-top: 15px;
 
   &:hover {
     background-color: #03045e;
@@ -135,8 +135,9 @@ const Action = ({ isOpen, onClose, rowData }) => {
         RepairmanName,
         OrderStatus,
         OrderProgress,
+        PaymentStatus,
       } = rowData;
-  
+
       setFormValues({
         ...formValues,
         referenceNumber: RefNumber || "",
@@ -148,10 +149,11 @@ const Action = ({ isOpen, onClose, rowData }) => {
         assignedRepairman: RepairmanName || "",
         status: OrderStatus || "",
         progress: OrderProgress || "",
+        payment: PaymentStatus || "",
       });
     }
   }, [isOpen, rowData]);
-  
+
   // Helper function to format the date as "mm/dd/yyyy"
   const formatDate = (dateString) => {
     const dateObj = new Date(dateString);
@@ -174,6 +176,7 @@ const Action = ({ isOpen, onClose, rowData }) => {
       assignedRepairman,
       status,
       progress,
+      payment,
     } = formValues;
 
     try {
@@ -192,6 +195,7 @@ const Action = ({ isOpen, onClose, rowData }) => {
           assignedRepairman,
           status,
           progress,
+          payment,
         }),
       });
 
@@ -209,13 +213,13 @@ const Action = ({ isOpen, onClose, rowData }) => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-  
+
     // Convert ISO format date to desired format
     const formattedValue =
       name === "dateAccepted" || name === "estimatedCompletion"
         ? new Date(value).toLocaleDateString("en-GB")
         : value;
-  
+
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: formattedValue,
@@ -292,13 +296,19 @@ const Action = ({ isOpen, onClose, rowData }) => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Input
-              type="text"
-              placeholder="Assigned repairman"
+            <Select
               name="assignedRepairman"
               value={formValues.assignedRepairman}
               onChange={handleInputChange}
-            />
+              style={{ width: "100%" }}
+            >
+              <option style={{ backgroundColor: "#D3D3D3" }} readOnly>
+                Assigned Repairman
+              </option>
+              <option>Jeth Newton</option>
+              <option>Jasper Testyn</option>
+              <option>Jhaslyn Lovelace</option>
+            </Select>
           </InputWrapper>
           <InputWrapper
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -308,7 +318,9 @@ const Action = ({ isOpen, onClose, rowData }) => {
               value={formValues.status}
               onChange={handleInputChange}
             >
-              <option readOnly>Status</option>
+              <option style={{ backgroundColor: "#D3D3D3" }} readOnly>
+                Status
+              </option>
               <option style={{ color: "#5EBF7F" }}>Finished</option>
               <option style={{ color: "#71C4D7" }}>On-going</option>
               <option style={{ color: "#C85D63" }}>Due</option>
@@ -318,12 +330,27 @@ const Action = ({ isOpen, onClose, rowData }) => {
               value={formValues.progress}
               onChange={handleInputChange}
             >
-              <option readOnly>Progress</option>
+              <option style={{ backgroundColor: "#D3D3D3" }} readOnly>
+                Progress
+              </option>
               <option>100%</option>
               <option>75%</option>
               <option>50%</option>
               <option>25%</option>
               <option>10%</option>
+            </Select>
+          </InputWrapper>
+          <InputWrapper>
+            <Select
+              name="payment"
+              value={formValues.payment}
+              onChange={handleInputChange}
+              style={{ width: "100%" }}
+            >
+              <option>Payment</option>
+              <option style={{ color: "#5EBF7F" }}>Fully Paid</option>
+              <option style={{ color: "#71C4D7" }}>Downpayment</option>
+              <option style={{ color: "#C85D63" }}>Unpaid</option>
             </Select>
           </InputWrapper>
           <Button type="submit">SAVE CHANGES</Button>

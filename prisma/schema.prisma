@@ -28,6 +28,7 @@ model Order {
   OrderStatus     String
   OrderProgress   String
   RepairmanName   String
+  PaymentStatus   String
 }
 
 model Repairman {

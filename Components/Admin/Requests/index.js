@@ -136,7 +136,7 @@ const TdS = styled.td`
     `}
 
     ${(props) =>
-    props.status === "Failed" &&
+    props.status === "Due" &&
     css`
       color: #ff0000;
     `}
@@ -159,10 +159,32 @@ const RefreshButton = styled.button`
   cursor: pointer;
 `;
 
+const StatusFilter = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
+const FilterButton = styled.button`
+  background-color: ${(props) => (props.active ? "#03045e" : "transparent")};
+  color: ${(props) => (props.active ? "white" : "#03045e")};
+  border: none;
+  border-radius: 5px;
+  padding: 5px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #03045e;
+    color: white;
+  }
+`;
+
 function Requests() {
   const [requests, setRequests] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [clickedRowData, setClickedRowData] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const handleOpenModal = (rowData) => {
     setIsModalOpen(true);
@@ -173,7 +195,7 @@ function Requests() {
     setIsModalOpen(false);
   };
 
-  const refreshRequests = async () => {
+  const fetchRequestsData = async () => {
     try {
       const response = await fetch("/api/requests");
       if (response.ok) {
@@ -187,40 +209,48 @@ function Requests() {
     }
   };
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await fetch("/api/requests");
-        if (response.ok) {
-          const data = await response.json();
-          setRequests(data);
-        } else {
-          console.error("Error retrieving requests:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error retrieving requests:", error);
+  const refreshRequests = async () => {
+    try {
+      let url = "/api/requests";
+      if (selectedStatus) {
+        url += `?status=${selectedStatus}`;
       }
-    };
+      const response = await fetch(url);
+      if (response.ok) {
+        const data = await response.json();
+        setRequests(data);
+      } else {
+        console.error("Error retrieving requests:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error retrieving requests:", error);
+    }
+  };
 
-    fetchRequests();
+  useEffect(() => {
+    fetchRequestsData();
+
+    const interval = setInterval(fetchRequestsData, 1000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  const handleStatusFilter = (status) => {
+    setSelectedStatus(status);
+  };
 
   return (
     <>
       <Wrapper>
         <Header>
-          <Icon
-            icon="mdi:tools"
-            width="40"
-            style={{ marginRight: "15px" }}
-          />
+          <Icon icon="mdi:tools" width="40" style={{ marginRight: "15px" }} />
           <h2 style={{ fontFamily: "Roboto", fontWeight: "600" }}>
             Request Details
           </h2>
           {/* <Search placeholder="Search" /> */}
-          <RefreshButton onClick={refreshRequests}>
+          {/* <RefreshButton onClick={refreshRequests}>
             <Icon icon="bi:arrow-counterclockwise" width="20" />
-          </RefreshButton>
+          </RefreshButton> */}
         </Header>
         <TableWrapper>
           <THead>
@@ -231,7 +261,12 @@ function Requests() {
             <Th style={{ width: "7%", paddingRight: "10px" }}>Status</Th>
           </THead>
           <TBody>
-            {requests.map((request) => (
+          {requests
+            .filter((request) => {
+              if (selectedStatus === "") return true;
+              return request.OrderStatus === selectedStatus;
+            })
+            .map((request) => (
               <Tr
                 key={request.RefNumber}
                 onClick={() => handleOpenModal(request)}
@@ -247,6 +282,32 @@ function Requests() {
             ))}
           </TBody>
         </TableWrapper>
+        <StatusFilter>
+          <FilterButton
+            active={selectedStatus === ""}
+            onClick={() => handleStatusFilter("")}
+          >
+            All
+          </FilterButton>
+          <FilterButton
+            active={selectedStatus === "Finished"}
+            onClick={() => handleStatusFilter("Finished")}
+          >
+            Finished
+          </FilterButton>
+          <FilterButton
+            active={selectedStatus === "On-going"}
+            onClick={() => handleStatusFilter("On-going")}
+          >
+            On-going
+          </FilterButton>
+          <FilterButton
+            active={selectedStatus === "Due"}
+            onClick={() => handleStatusFilter("Due")}
+          >
+            Due
+          </FilterButton>
+        </StatusFilter>
       </Wrapper>
       <Action
         isOpen={isModalOpen}

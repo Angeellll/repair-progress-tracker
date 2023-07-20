@@ -121,11 +121,12 @@ const AddRequest = ({ isOpen, onClose }) => {
     assignedRepairman: "",
     status: "",
     progress: "",
+    payment: "",
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch("/api/createOrder", {
         method: "POST",
@@ -134,7 +135,7 @@ const AddRequest = ({ isOpen, onClose }) => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         // Reset form
         setFormData({
@@ -146,23 +147,24 @@ const AddRequest = ({ isOpen, onClose }) => {
           assignedRepairman: "",
           status: "",
           progress: "",
+          payment: "",
         });
-  
+
         // Show success notification
         toast.success("Order created successfully!");
-  
+
         // Close the modal
         onClose();
       } else {
         const data = await response.json();
         console.error("Error creating order:", data.error);
-  
+
         // Show error notification
         toast.error(data.error);
       }
     } catch (error) {
       console.error("Error creating order:", error);
-  
+
       // Show error notification
       toast.error("An error occurred. Please try again later.");
     }
@@ -206,6 +208,7 @@ const AddRequest = ({ isOpen, onClose }) => {
             />
           </InputWrapper>
           <InputWrapper>
+          <h5 style={{ margin: "0px", fontWeight: "500" }}>Date accepted</h5>
             <Input
               type="date"
               name="dateAccepted"
@@ -215,6 +218,9 @@ const AddRequest = ({ isOpen, onClose }) => {
             />
           </InputWrapper>
           <InputWrapper>
+          <h5 style={{ margin: "0px", fontWeight: "500" }}>
+              Estimated completion
+            </h5>
             <Input
               type="date"
               name="etaCompletion"
@@ -233,13 +239,17 @@ const AddRequest = ({ isOpen, onClose }) => {
             />
           </InputWrapper>
           <InputWrapper>
-            <Input
-              type="text"
+            <Select
               name="assignedRepairman"
               value={formData.assignedRepairman}
               onChange={handleInputChange}
-              placeholder="Assigned Repairman"
-            />
+              style={{ width: "100%" }}
+            >
+              <option  style={{ backgroundColor: "#D3D3D3" }}>Assigned Repairman</option>
+              <option>Jeth Newton</option>
+              <option>Jasper Testyn</option>
+              <option>Jhaslyn Lovelace</option>
+            </Select>
           </InputWrapper>
           <InputWrapper
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -267,6 +277,20 @@ const AddRequest = ({ isOpen, onClose }) => {
               <option>10%</option>
             </Select>
           </InputWrapper>
+          <InputWrapper>
+            <Select
+              name="payment"
+              value={formData.payment}
+              onChange={handleInputChange}
+              style={{ width: "100%" }}
+            >
+              <option>Payment</option>
+              <option style={{ color: "#5EBF7F" }}>Fully Paid</option>
+              <option style={{ color: "#71C4D7" }}>Downpayment</option>
+              <option style={{ color: "#C85D63" }}>Unpaid</option>
+            </Select>
+          </InputWrapper>
+
           <Button type="submit">CONFIRM REQUEST</Button>
         </FormContainer>
       </Container>

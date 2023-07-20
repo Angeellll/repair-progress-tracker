@@ -17,6 +17,7 @@ export default async function handler(req, res) {
     assignedRepairman,
     status,
     progress,
+    payment,
   } = req.body;
 
   try {
@@ -31,6 +32,7 @@ export default async function handler(req, res) {
         RepairmanName: assignedRepairman,
         OrderStatus: status,
         OrderProgress: progress,
+        PaymentStatus: payment,
       },
     });
 
