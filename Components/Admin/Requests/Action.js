@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Icon } from "@iconify/react";
 import Card from "@/Components/Client/Info/Progress/Card";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Wrapper = styled.div`
   width: 75%;
@@ -110,6 +112,23 @@ const Button = styled.button`
   }
 `;
 
+const Button1 = styled.button`
+  border-radius: 5px;
+  background-color: transparent;
+  color: var(--03045-e, #023e8a);
+  font-weight: 600;
+  padding: 10px 25px 10px 25px;
+  cursor: pointer;
+  border: none;
+  margin-top: 15px;
+  margin-right: 20px;
+
+  &:hover {
+    background: var(--03045-e, #a30015);
+    color: white;
+  }
+`;
+
 const Action = ({ isOpen, onClose, rowData }) => {
   const [formValues, setFormValues] = useState({
     referenceNumber: "",
@@ -154,7 +173,6 @@ const Action = ({ isOpen, onClose, rowData }) => {
     }
   }, [isOpen, rowData]);
 
-  // Helper function to format the date as "mm/dd/yyyy"
   const formatDate = (dateString) => {
     const dateObj = new Date(dateString);
     const year = dateObj.getFullYear();
@@ -214,7 +232,6 @@ const Action = ({ isOpen, onClose, rowData }) => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
-    // Convert ISO format date to desired format
     const formattedValue =
       name === "dateAccepted" || name === "estimatedCompletion"
         ? new Date(value).toLocaleDateString("en-GB")
@@ -224,6 +241,29 @@ const Action = ({ isOpen, onClose, rowData }) => {
       ...prevValues,
       [name]: formattedValue,
     }));
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(
+        `/api/deleteRequest?referenceNumber=${formValues.referenceNumber}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        toast.success("Order deleted successfully!");
+        onClose();
+      } else {
+        const data = await response.json();
+        console.error("Error deleting order:", data.error);
+        toast.error(data.error);
+      }
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      toast.error("An error occurred. Please try again later.");
+    }
   };
 
   if (!isOpen) return null;
@@ -353,9 +393,19 @@ const Action = ({ isOpen, onClose, rowData }) => {
               <option style={{ color: "#C85D63" }}>Unpaid</option>
             </Select>
           </InputWrapper>
-          <Button type="submit">SAVE CHANGES</Button>
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
+            <Button1 type="button" onClick={handleDelete}>
+              DELETE
+            </Button1>
+            <Button type="submit">SAVE CHANGES</Button>
+          </div>
         </FormContainer>
       </Container>
+      <ToastContainer />
     </Wrapper>
   );
 };
