@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Back from "./Back";
 
@@ -45,12 +45,44 @@ const Progress = styled.progress`
   }
 `;
 
+const API_BASE_URL = "/api/order";
+
 const ProgressBar = () => {
-  const value = 32;
+  const [progressValue, setProgressValue] = useState(0);
+
+  const getReferenceNumberFromCache = () => {
+    try {
+      return localStorage.getItem("referenceNumber");
+    } catch (error) {
+      console.error("Error retrieving reference number from cache:", error);
+      return "";
+    }
+  };
+
+  const cachedRefNumber = getReferenceNumberFromCache();
+
+  useEffect(() => {
+    if (cachedRefNumber) {
+      fetchOrderData(cachedRefNumber);
+    }
+  }, [cachedRefNumber]);
+
+  const fetchOrderData = async (refNumber) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}?refNumber=${refNumber}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch order data");
+      }
+      const data = await response.json();
+      setProgressValue(parseInt(data.OrderProgress) || 0);
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+    }
+  };
 
   return (
     <Wrapper>
-      <Progress value={value} max={100} />
+      <Progress value={progressValue} max={100} />
       <Back/>
     </Wrapper>
   );

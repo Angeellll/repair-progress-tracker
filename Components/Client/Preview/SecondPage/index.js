@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Background from "@/Components/Client/Utils/Background";
 import MoreButton from "../SecondPage/More";
 import styled from "styled-components";
+import { useRouter } from "next/router";
 
 const Wrapper = styled.div`
   display: flex;
@@ -66,15 +67,63 @@ const GreetingContainer = styled.div`
   grid-row: 1;
 `;
 
-export default function index() {
+export default function SecondPage() {
+  const router = useRouter();
+  const [orderStatus, setOrderStatus] = useState(null);
+
+  useEffect(() => {
+    const { refNumber } = router.query;
+    if (refNumber) {
+      // Save the reference number to cache
+      saveReferenceNumberToCache(refNumber);
+      // Fetch order status from the API using the reference number
+      fetchOrderStatus(refNumber);
+    } else {
+      // If there's no reference number in the query, try to retrieve it from cache
+      const cachedRefNumber = getReferenceNumberFromCache();
+      if (cachedRefNumber) {
+        // Fetch order status from the API using the cached reference number
+        fetchOrderStatus(cachedRefNumber);
+      }
+    }
+  }, [router.query]);
+
+  const saveReferenceNumberToCache = (refNumber) => {
+    try {
+      localStorage.setItem("referenceNumber", refNumber);
+    } catch (error) {
+      console.error("Error saving reference number to cache:", error);
+    }
+  };
+
+  const getReferenceNumberFromCache = () => {
+    try {
+      return localStorage.getItem("referenceNumber");
+    } catch (error) {
+      console.error("Error retrieving reference number from cache:", error);
+      return null;
+    }
+  };
+
+  const fetchOrderStatus = async (refNumber) => {
+    try {
+      const response = await fetch(`/api/references/${refNumber}`);
+      if (response.ok) {
+        const data = await response.json();
+        setOrderStatus(data.OrderStatus);
+      } else {
+        console.error("Failed to fetch order status.");
+      }
+    } catch (error) {
+      console.error("Error fetching order status:", error);
+    }
+  };
 
   return (
     <Background>
       <Wrapper>
         <GreetingContainer>
-          <h2
-            style={{ marginTop: "-60px", fontSize: "30px", lineHeight: "50px" }}
-          >
+          <h2 style={{ marginTop: "-60px", fontSize: "30px", lineHeight: "50px" }}>
             Progress Overview
           </h2>
           <h4 style={{ marginTop: "-20px", fontSize: "15px", fontWeight: "400", width: "80%" }}>
@@ -86,31 +135,19 @@ export default function index() {
         </GreetingContainer>
         <CardContainer>
           <InfoContainer>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
+            <div style={{ width: "100%", display: "flex", justifyContent: "space-between" }}>
               <Box>
                 <Title>Ref number</Title>
-                <Data>000085752257</Data>
+                <Data>{router.query.refNumber || "N/A"}</Data>
               </Box>
               <Box>
                 <Title>Status</Title>
-                <Data style={{ color: "#0096C7" }}>On Going</Data>
+                <Data style={{ color: "#0096C7" }}>{orderStatus || "N/A"}</Data>
               </Box>
             </div>
           </InfoContainer>
           <SignInContainer>
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "start",
-              }}
-            >
+            <div style={{ width: "100%", display: "flex", justifyContent: "start" }}>
               <MoreButton />
             </div>
           </SignInContainer>

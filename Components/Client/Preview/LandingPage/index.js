@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
 import { useRouter } from "next/router";
@@ -57,23 +57,44 @@ const Button = styled.button`
   }
 `;
 
-export default function index() {
+export default function LandingPage() {
   const router = useRouter();
+  const [referenceNumber, setReferenceNumber] = useState("");
+
+  useEffect(() => {
+    // Clear "referenceNumber" from cache when component mounts
+    try {
+      localStorage.removeItem("referenceNumber");
+    } catch (error) {
+      console.error("Error deleting reference number from cache:", error);
+    }
+
+    // Cleanup: Clear "referenceNumber" from cache when component unmounts
+    return () => {
+      try {
+        localStorage.removeItem("referenceNumber");
+      } catch (error) {
+        console.error("Error deleting reference number from cache:", error);
+      }
+    };
+  }, []);
 
   const handleButtonClick = () => {
-    router.push("/Reference");
+    router.push(`/Reference?refNumber=${referenceNumber}`);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
   };
 
+  const handleInputChange = (e) => {
+    setReferenceNumber(e.target.value);
+  };
+
   return (
     <Background>
       <Wrapper>
-        <h2
-          style={{ marginTop: "-110px", fontSize: "40px", lineHeight: "50px" }}
-        >
+        <h2 style={{ marginTop: "-110px", fontSize: "40px", lineHeight: "50px" }}>
           Welcome to <br />
           Connection Power Tools
         </h2>
@@ -83,14 +104,13 @@ export default function index() {
 
         <form onSubmit={handleSubmit}>
           <FormContainer>
-            <Input type="text" placeholder="Enter reference number" />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "start",
-                
-              }}
-            >
+            <Input
+              type="text"
+              placeholder="Enter reference number"
+              value={referenceNumber}
+              onChange={handleInputChange}
+            />
+            <div style={{ display: "flex", justifyContent: "start" }}>
               <Button onClick={handleButtonClick}>CHECK PROGRESS</Button>
             </div>
           </FormContainer>

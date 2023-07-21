@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -37,36 +37,85 @@ const Data = styled.h5`
   margin-top: -10px;
 `;
 
+const API_BASE_URL = "/api/order";
+
 function Card() {
+  const [referenceNumber, setReferenceNumber] = useState("");
+  const [orderData, setOrderData] = useState(null);
+
+  useEffect(() => {
+    // Try to retrieve the reference number from cache
+    const cachedRefNumber = getReferenceNumberFromCache();
+    if (cachedRefNumber) {
+      setReferenceNumber(cachedRefNumber);
+      // Fetch the order data from the Prisma database
+      fetchOrderData(cachedRefNumber);
+    }
+  }, []);
+
+  const getReferenceNumberFromCache = () => {
+    try {
+      return localStorage.getItem("referenceNumber");
+    } catch (error) {
+      console.error("Error retrieving reference number from cache:", error);
+      return "";
+    }
+  };
+
+  const fetchOrderData = async (refNumber) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}?refNumber=${refNumber}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch order data");
+      }
+      const order = await response.json();
+
+      if (order && order.DateAccepted) {
+        // Convert ISO date to "Month Day, Year" format
+        const formattedDate = new Date(order.DateAccepted).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
+        // Update the order object with the formatted date
+        const updatedOrder = { ...order, DateAccepted: formattedDate };
+        setOrderData(updatedOrder);
+      }
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+    }
+  };
+  
   return (
     <Wrapper>
       <Box>
         <Title>Ref number</Title>
-        <Data>000085752257</Data>
+        <Data>{referenceNumber || "N/A"}</Data>
       </Box>
       <Box>
         <Title>Date</Title>
-        <Data>25 Feb 2023</Data>
+        <Data>{orderData ? orderData.DateAccepted : "N/A"}</Data>
       </Box>
       <Box>
-      <Title>Client Name</Title>
-        <Data>Jeth Nico Morado</Data>
-        
+        <Title>Client Name</Title>
+        <Data>{orderData ? orderData.CustomerName : "N/A"}</Data>
       </Box>
       <Box>
         <Title>Assigned Repairman</Title>
-        <Data>Jeth Nico Morado</Data>
+        <Data>{orderData ? orderData.RepairmanName : "N/A"}</Data>
       </Box>
       <Box>
         <Title>Payment</Title>
-        <Data  style={{ fontWeight: "700"}}>Paid</Data>
+        <Data style={{ fontWeight: "700" }}>{orderData ? orderData.PaymentStatus : "N/A"}</Data>
       </Box>
       <Box>
-      <Title>Status</Title>
-        <Data style={{ color: "#0096C7" }}>On Going</Data>
+        <Title>Status</Title>
+        <Data style={{ color: "#0096C7" }}>{orderData ? orderData.OrderStatus : "N/A"}</Data>
       </Box>
     </Wrapper>
   );
 }
+
 
 export default Card;
