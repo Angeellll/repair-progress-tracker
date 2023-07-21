@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Background from "@/Components/Client/Utils/Background";
 import styled from "styled-components";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
+
+const API_BASE_URL = "/api/checkReferenceNumber";
 
 const Wrapper = styled.div`
   display: flex;
@@ -79,9 +83,37 @@ export default function LandingPage() {
     };
   }, []);
 
-  const handleButtonClick = () => {
-    router.push(`/Reference?refNumber=${referenceNumber}`);
-  };
+  const handleButtonClick = async () => {
+    try {
+      // Check if the reference number exists in the Order model
+      const response = await fetch(API_BASE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ referenceNumber }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.exists) {
+          // If the reference number exists in the database, navigate to the reference page
+          router.push(`/Reference?refNumber=${referenceNumber}`);
+        } else {
+          // Handle the case when the reference number does not exist and show a toast notification
+          toast.error("Reference number does not exist in the database.");
+        }
+      } else {
+        // Handle non-200 status codes
+        toast.error("Incorrect reference number. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error checking reference number in the database:", error);
+      // Show a toast notification for the error
+      toast.error("An error occurred while checking the reference number.");
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -116,6 +148,7 @@ export default function LandingPage() {
             </div>
           </FormContainer>
         </form>
+        <ToastContainer />
       </Wrapper>
     </Background>
   );

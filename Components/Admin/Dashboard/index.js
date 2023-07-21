@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { Icon } from "@iconify/react";
 import BarGraph from "./BarGraph";
 import appointments from "../PendingRequests";
+import fetchOrders from "./fetchOrders";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -103,6 +104,11 @@ const P = styled.p`
 function Dashboard() {
   const [requests, setRequests] = useState([]);
   const [appointments, setAppointments] = useState([]);
+  const [orderCounts, setOrderCounts] = useState({
+    completed: 0,
+    ongoing: 0,
+    due: 0,
+  });
 
   const formatDate = (dateString) => {
     const dateObject = new Date(dateString);
@@ -154,6 +160,21 @@ function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Fetch orders using the fetchOrders function
+    fetchOrders()
+      .then((data) => {
+        // Calculate counts for each OrderStatus
+        const formattedCounts = {
+          completed: data.completed || 0,
+          ongoing: data.ongoing || 0,
+          due: data.due || 0,
+        };
+        setOrderCounts(formattedCounts);
+      })
+      .catch((error) => console.error("Error fetching orders:", error));
+  }, []);
+
   return (
     <Wrapper>
       <Header>
@@ -183,7 +204,7 @@ function Dashboard() {
           <CardWrapper style={{ gridColumn: "1" }}>
             <CardContainer style={{ backgroundColor: "#98FF98" }}>
               <P>TRANSACTION</P>
-              <h2 style={{ margin: "0px" }}>10</h2>
+              <h2 style={{ margin: "0px" }}>{orderCounts.completed}</h2>
               <P>Completed</P>
             </CardContainer>
           </CardWrapper>
@@ -191,14 +212,14 @@ function Dashboard() {
           <CardWrapper style={{ gridColumn: "2" }}>
             <CardContainer style={{ backgroundColor: "#89CFF0" }}>
               <P>ON-GOING</P>
-              <h2 style={{ margin: "0px" }}>2</h2>
+              <h2 style={{ margin: "0px" }}>{orderCounts.ongoing}</h2>
               <P>Repairs</P>
             </CardContainer>
           </CardWrapper>
           <CardWrapper style={{ gridColumn: "3" }}>
             <CardContainer style={{ backgroundColor: "salmon" }}>
               <P>DUE</P>
-              <h2 style={{ margin: "0px" }}>1</h2>
+              <h2 style={{ margin: "0px" }}>{orderCounts.due}</h2>
               <P>Incoming</P>
             </CardContainer>
           </CardWrapper>
