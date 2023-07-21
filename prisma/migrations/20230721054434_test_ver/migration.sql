@@ -41,7 +41,7 @@ CREATE TABLE "Appointment" (
     "Intent" TEXT NOT NULL,
     "Date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "SetDate" DATETIME NOT NULL,
-    "AppointmentStatus" TEXT NOT NULL
+    "AppointmentStatus" TEXT NOT NULL DEFAULT 'Pending'
 );
 
 -- CreateIndex
