@@ -83,7 +83,7 @@ const ProgressBar = () => {
   return (
     <Wrapper>
       <Progress value={progressValue} max={100} />
-      <Back/>
+      <Back>SIGNOUT</Back>
     </Wrapper>
   );
 };

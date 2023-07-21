@@ -116,6 +116,7 @@ export default function index({ children }) {
               justifyContent: "space-between",
               
             }}>
+              <A href="/Appointment">Appointment</A>
               <A href="/FAQ">FAQ</A>
               
             </div>

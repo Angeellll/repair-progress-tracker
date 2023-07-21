@@ -1,9 +1,3 @@
-/*
-  Warnings:
-
-  - Added the required column `SetDate` to the `Appointment` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- RedefineTables
 PRAGMA foreign_keys=OFF;
 CREATE TABLE "new_Appointment" (
@@ -12,9 +6,9 @@ CREATE TABLE "new_Appointment" (
     "Intent" TEXT NOT NULL,
     "Date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "SetDate" DATETIME NOT NULL,
-    "AppointmentStatus" TEXT NOT NULL
+    "AppointmentStatus" TEXT NOT NULL DEFAULT 'Pending'
 );
-INSERT INTO "new_Appointment" ("AppointmentID", "AppointmentStatus", "ClientName", "Date", "Intent") SELECT "AppointmentID", "AppointmentStatus", "ClientName", "Date", "Intent" FROM "Appointment";
+INSERT INTO "new_Appointment" ("AppointmentID", "AppointmentStatus", "ClientName", "Date", "Intent", "SetDate") SELECT "AppointmentID", "AppointmentStatus", "ClientName", "Date", "Intent", "SetDate" FROM "Appointment";
 DROP TABLE "Appointment";
 ALTER TABLE "new_Appointment" RENAME TO "Appointment";
 PRAGMA foreign_key_check;

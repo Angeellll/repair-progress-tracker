@@ -109,6 +109,7 @@ export default function LandingPage() {
               placeholder="Enter reference number"
               value={referenceNumber}
               onChange={handleInputChange}
+              required
             />
             <div style={{ display: "flex", justifyContent: "start" }}>
               <Button onClick={handleButtonClick}>CHECK PROGRESS</Button>

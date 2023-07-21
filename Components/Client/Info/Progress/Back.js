@@ -24,7 +24,6 @@ const Button = styled.div`
   height: 30px;
   margin: auto;
   width: 100px;
-  padding-left: 10px;
   
   cursor: pointer;
 
@@ -36,7 +35,6 @@ const Button = styled.div`
 
 const Ic = styled.div`
   position: absolute;
-  left: 10px;
   color: #ffffff;
   margin-top: 5px;
   cursor: pointer;
@@ -44,7 +42,7 @@ const Ic = styled.div`
 
 
 
-function Back() {
+function Back({children}) {
   const router = useRouter();
 
   const handleButtonClick = () => {
@@ -60,11 +58,11 @@ function Back() {
 
   return (
     <Container onClick={handleButtonClick}>
-      <Ic>
+      {/* <Ic>
         <Icon icon="ic:round-arrow-left" width="60" height="40" />
-      </Ic>
+      </Ic> */}
 
-      <Button>Back</Button>
+      <Button>{children}</Button>
     </Container>
   );
 }

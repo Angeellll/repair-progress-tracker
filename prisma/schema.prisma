@@ -48,5 +48,5 @@ model Appointment {
   Intent            String
   Date              DateTime @default(now())
   SetDate           DateTime
-  AppointmentStatus String
+  AppointmentStatus String @default("Pending")
 }

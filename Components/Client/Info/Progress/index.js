@@ -1,5 +1,5 @@
 import React from "react";
-import Background from "@/Components/Client/Utils/Background";
+import Background from "@/Components/Client/Utils/SignBG";
 import styled from "styled-components";
 import Progress from "@/Components/Client/Info/Progress/index1";
 
